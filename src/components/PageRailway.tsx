@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import TrainIllustration from './TrainIllustration';
+import { STATIONS } from '../data/stations';
 import { RAILWAY_TRIAL, railPaths, trackOffset, trackAngle, type TrackBend } from '../utils/journeyMotion';
 
-const stops = ['home', 'about', 'team', 'contact'];
+const stops = STATIONS.map(station => station.id);
 
 export default function PageRailway({ activeSection }: { activeSection: string }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -30,7 +31,8 @@ export default function PageRailway({ activeSection }: { activeSection: string }
       const y = motion.matches ? 0 : progress * travel;
       const center = y + train.offsetHeight / 2;
       const offset = motion.matches ? 0 : trackOffset(center, bendRef.current);
-      const zoom = 1 + (RAILWAY_TRIAL.maxZoom - 1) * (bendRef.current.amplitude ? offset / bendRef.current.amplitude : 0);
+      const closeup = bendRef.current.amplitude ? Math.min(1, Math.max(0, offset / bendRef.current.amplitude) * 1.4) : 0;
+      const zoom = 1 + (RAILWAY_TRIAL.maxZoom - 1) * closeup;
       train.style.transform = `translate(${offset}px, ${y}px)`;
       train.style.setProperty('--train-zoom', String(zoom));
       train.style.setProperty('--train-angle', `${motion.matches ? 0 : trackAngle(center, bendRef.current)}deg`);

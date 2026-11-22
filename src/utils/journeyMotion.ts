@@ -1,5 +1,5 @@
 // Set enabled to false to park this experiment without changing the page layout.
-export const RAILWAY_TRIAL = { enabled: true, bendPixels: 24, maxZoom: 1.12 };
+export const RAILWAY_TRIAL = { enabled: true, bendPixels: 24, maxZoom: 1.5 };
 export interface TrackBend { start: number; end: number; amplitude: number }
 
 export function trackOffset(y: number, bend: TrackBend): number {

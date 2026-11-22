@@ -2,7 +2,22 @@
 
 Updated 2026-11-23. All new designs are developed on a new branch and committed locally using the user's configured Git identity. Only the user pushes to the repository. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Current revision: station arrivals and motion trial
+## Current revision: station announcements and a clearer close-up
+
+The user approved the station headings and track bend but found the original zoom too subtle. This revision keeps those treatments and makes the railway journey easier to follow.
+
+- Add a persistent station display: Now arriving / Current station, the current section name, and Next station. Examples: Our team followed by Get in touch; the final section shows End of line.
+- Use the shared station data for both the announcement and railway markers. The display follows the same active-section state as navigation, settles after arrival, and does not issue repeated screen-reader live announcements during scrolling.
+- Fit the display into the existing header: centered above the railway on desktop and a compact row below navigation on smaller screens. Do not increase the header height or take room from pinned Team browsing.
+- Increase the desktop train close-up from 1.12 to 1.5 and hold its peak longer through the About approach. Text and controls stay at their normal size; the bend remains 24px.
+- Widen the desktop railway lane from 144px to 192px to contain the enlarged and rotated train. Mobile and reduced-motion views retain zoom 1 and no bend.
+- Keep the trial reversible through `RAILWAY_TRIAL` in `src/utils/journeyMotion.ts`. Project presentation features remain the next iteration.
+
+Plan: add a failing browser check for announcement content, visible zoom, header fit, and lane clearance; implement and inspect desktop/mobile captures; run existing regressions; commit locally on `design/station-announcements`. Status: implemented and verified; local commit only, no push.
+
+Validation: the production build passes (44 modules). Station-name transitions, caption settling, the stronger close-up, header fit, lane clearance, mobile/reduced-motion behavior, team scrolling, profiles/history/focus, and link handling pass browser/data checks. Desktop and mobile captures were inspected. Independent review found no material issues, checked header fit at 12 widths, and sampled the full bend to confirm train clearance. Browser checks used headless Edge; Safari and physical touch devices remain untested.
+
+## Previous revision: station arrivals and motion trial
 
 The user requested removal of the competing hero background tracks, stronger About and Team station headings, and a restrained transition experiment. They confirmed that the departure board and ticket cards should stay in the next iteration.
 
@@ -55,8 +70,8 @@ Status: recorded for the next design iteration; explicitly deferred while the ra
 
 ## Evidence and remaining work
 
-The production build passes (40 modules). Browser regressions pass for central lane clearance, alternating content, the larger train, active stations, About expansion, desktop/mobile breakpoints, train motion and reduced-motion parking, team scrolling, profile focus/history, and website link handling. Desktop/mobile captures were inspected; an independent source/browser review found no material issues. Browser checks used headless Edge; Safari and physical touch devices were not tested.
+The latest production build passes (44 modules). Browser regressions pass for central lane clearance, alternating content, the larger train, active stations, current/next announcements, About expansion, desktop/mobile breakpoints, train motion and reduced-motion parking, team scrolling, profile focus/history, and website link handling. Desktop/mobile captures were inspected; independent source/browser reviews found no material issues. Browser checks used headless Edge; Safari and physical touch devices were not tested.
 
-The new train is 56px wide on desktop and scales down in the mobile gutter. The rail remains decorative and cannot block controls. Local review screenshots and verification scripts remain excluded from commits according to the user's `.gitignore`.
+The train is 56px wide at its normal desktop size and grows to 84px at the About close-up, inside the widened 192px lane. It scales down in the mobile gutter. The rail remains decorative and cannot block controls. Local review screenshots and verification scripts remain excluded from commits according to the user's `.gitignore`.
 
 Real project content and destination URLs are required before building the two planned project presentations. They remain roadmap items rather than shipped features in this revision.
