@@ -2,7 +2,25 @@
 
 Updated 2026-11-23. All new designs are developed on a new branch and committed locally using the user's configured Git identity. Only the user pushes to the repository. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Current revision: station announcements and a clearer close-up
+## Current revision: varied station scenes and member passes
+
+The user approved the platform style and announcements, requested a smaller 30–35% zoom, and wanted more than one railway event. This revision uses 35% and adds variation without moving page content.
+
+- About: retain the 24px rightward bend with a 1.35 close-up cap and a longer peak.
+- Our Team: add a separate 20px leftward track switch and a mild 1.1 close-up as the train reaches the members' platform.
+- Get in Touch: use a gentler 12px final approach without zoom; the train's headlights turn warm yellow for this approach, without flashing or glow.
+- Keep each scene tied to native scroll and reversible on upward scrolling. Recompute the rail when About expands or viewport/content sizes change; clip event ranges to avoid overlapping approaches.
+- Keep the existing current/next-station display. Preserve the 192px content-free lane. Disable additional motion on mobile/reduced-motion layouts.
+- Treat member profiles as UNB member passes: a shared member-number banner, portrait accent, station-dot skills, and perforation-style project panels. Keep existing photos, names, project text, website links, Escape/backdrop dismissal, and keyboard focus behavior.
+- Use the same member-pass treatment in the active dialog and the retained standalone profile component. Add no fake project destinations, credentials, seat numbers, or ticket-purchase controls.
+
+Plan: observe the new event/profile regression fail; implement the shared rail-scene geometry and member-pass styling; verify all scenes, member profiles, accessibility, team scrolling, and build; commit locally on `design/station-scenes-member-pass`. Status: implemented and verified; local commit only, no push.
+
+Validation: production build passes (45 modules). Browser checks cover all three scene events, their separate zoom caps, lane clearance, reduced-motion reset, all five member profiles at 1440/390/320px, profile overflow, Escape, focus/history/return position, current/next announcements, and team scrolling. Desktop/mobile profile and track-event captures were inspected. Independent source/browser review found no actionable issues and sampled all three events inside the 192px lane. Safari and physical touch-device checks were not performed.
+
+The public departure-board listing remains the next iteration. This revision only gives the project lists already inside profiles a restrained ticket-like treatment.
+
+## Previous revision: station announcements and a clearer close-up
 
 The user approved the station headings and track bend but found the original zoom too subtle. This revision keeps those treatments and makes the railway journey easier to follow.
 
@@ -66,12 +84,12 @@ Explore project cards inspired by transit tickets: a restrained perforation/cuto
 
 These can complement the departure board as a detailed view of selected projects. Keep the familiar project action labels and accessible focus states. The ticket treatment is visual; it should not imply a purchase or require visitors to understand transit terminology.
 
-Status: recorded for the next design iteration; explicitly deferred while the railway and station transitions are refined.
+Status: a restrained ticket-like detail has now been applied to existing project panels inside profiles. A public project-card presentation alongside the departure board remains a future iteration and needs confirmed project content/URLs.
 
 ## Evidence and remaining work
 
-The latest production build passes (44 modules). Browser regressions pass for central lane clearance, alternating content, the larger train, active stations, current/next announcements, About expansion, desktop/mobile breakpoints, train motion and reduced-motion parking, team scrolling, profile focus/history, and website link handling. Desktop/mobile captures were inspected; independent source/browser reviews found no material issues. Browser checks used headless Edge; Safari and physical touch devices were not tested.
+The latest production build passes (45 modules). Browser regressions pass for central lane clearance, alternating content, station-specific train events, active stations, current/next announcements, About expansion, desktop/mobile breakpoints, reduced-motion parking, team scrolling, all five member-pass profiles, profile focus/history, and website link handling. Desktop/mobile captures were inspected; independent source/browser reviews found no material issues. Browser checks used headless Edge; Safari and physical touch devices were not tested.
 
-The train is 56px wide at its normal desktop size and grows to 84px at the About close-up, inside the widened 192px lane. It scales down in the mobile gutter. The rail remains decorative and cannot block controls. Local review screenshots and verification scripts remain excluded from commits according to the user's `.gitignore`.
+The train is 56px wide at its normal desktop size and grows to about 76px at the 35% About close-up, inside the 192px lane. It scales down in the mobile gutter. The rail remains decorative and cannot block controls. Local review screenshots and verification scripts remain excluded from commits according to the user's `.gitignore`.
 
 Real project content and destination URLs are required before building the two planned project presentations. They remain roadmap items rather than shipped features in this revision.

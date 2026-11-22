@@ -46,6 +46,7 @@ button svg { flex: none; }
 .journey-train { position: absolute; top: 0; left: -6px; width: 56px; will-change: transform; z-index: 2; }
 .journey-train svg { display: block; width: 100%; height: auto; }
 .journey-train__model { transform: rotate(var(--train-angle, 0deg)) scale(var(--train-zoom, 1)); transform-origin: center; }
+.journey-track[data-event='contact'] .train-headlights { stroke: var(--lrt-yellow); }
 .journey-station { position: absolute; left: 0; width: 44px; height: 44px; border: 1px solid rgb(116 138 122 / 0.5); border-radius: 50%; display: grid; place-items: center; background: var(--paper); color: var(--secondary); font: 500 12px var(--font-nav); font-variant-numeric: tabular-nums; transition: background-color 180ms ease-out, color 180ms ease-out; }
 .journey-station[data-stop='home'] { background: var(--night); color: var(--text-home); }
 .journey-station.is-active { background: var(--lrt-green); color: var(--night); border-color: var(--lrt-green); }
@@ -239,6 +240,14 @@ button svg { flex: none; }
 .handle { font: 400 16px var(--font-title); margin: 8px 0 12px; color: var(--secondary); }
 .tagline { font-size: 13px; color: var(--secondary); margin: 0 0 12px; }
 .personal-website { margin-top: 16px; font-size: 13px; }
+.member-pass-banner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 0 40px 20px 0; margin-bottom: 28px; border-bottom: 1px dashed var(--line); }
+.member-pass-banner__route { display: grid; gap: 4px; color: var(--secondary); font: 400 11px/1.5 var(--font-nav); }
+.profile-pass .profile-photo { border-inline-start: 3px solid oklch(0.46 0.09 155) !important; border-radius: 8px; }
+.profile-pass .personal-website { max-width: 100%; }
+.profile-pass .chips li { display: flex; align-items: center; gap: 8px; }
+.profile-pass .chips li::before { content: ''; width: 6px; height: 6px; border: 1px solid oklch(0.46 0.09 155); border-radius: 50%; flex: none; }
+.profile-pass .projects li { position: relative; padding: 16px 16px 0 32px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); margin-bottom: 16px; }
+.profile-pass .projects li::before { content: ''; position: absolute; top: 12px; bottom: 12px; left: 12px; border-left: 1px dashed rgb(72 130 92 / 0.35); }
 .profile-body { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; border-top: 1px solid var(--line); padding-top: 32px; }
 .profile-body h3 { font: 500 18px var(--font-title); margin: 0 0 16px; }
 .profile-body p { font-size: 14px; color: var(--secondary); margin: 0 0 24px; overflow-wrap: anywhere; }
@@ -317,6 +326,8 @@ button svg { flex: none; }
   .profile-modal-footer .pill { font-size: 12px; padding: 12px; }
 }
 @media (max-width: 380px) {
+  .profile-pass .profile-head { flex-direction: column; align-items: flex-start; }
+  .profile-pass .profile-info { width: 100%; }
   .team-title-col .station-heading { padding: 8px; }
   .team-title-col .station-heading .display { font-size: 32px; line-height: 1.05; }
   .team-title-col .station-heading::after { display: none; }

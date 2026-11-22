@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { findMember, team } from "../data/team";
 import Socials from "../components/Socials";
 import PersonalWebsite from "../components/PersonalWebsite";
+import MemberPassBanner from "../components/MemberPassBanner";
 
 export default function Profile() {
   const { id } = useParams<{ id: string }>();
@@ -20,7 +21,8 @@ export default function Profile() {
   const next = team[(idx + 1) % team.length];
 
   return (
-    <section className="page profile">
+    <section className="page profile profile-pass">
+      <MemberPassBanner number={idx + 1} total={team.length} />
       <div className="profile-head">
         <img className="member-photo profile-photo" src={member.photo} alt={member.name} style={{ borderColor: member.accent }} />
         <div>

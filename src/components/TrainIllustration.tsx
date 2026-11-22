@@ -22,7 +22,7 @@ export default function TrainIllustration() {
       <path d="M18 102h8m-8 4h8m-8 4h8" stroke="var(--night-secondary)" strokeWidth="1" />
       <path d="M10 130a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v5a6 6 0 0 1-6 6H16a6 6 0 0 1-6-6v-5Z" fill="var(--night)" />
       <path d="M22 128v11" stroke="var(--night-secondary)" strokeWidth="1" />
-      <path d="M11 147h6m10 0h6" stroke="var(--text-home)" strokeWidth="2.5" strokeLinecap="round" />
+      <path className="train-headlights" d="M11 147h6m10 0h6" stroke="var(--text-home)" strokeWidth="2.5" strokeLinecap="round" />
       <path d="M18 151h8" stroke="var(--main)" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
