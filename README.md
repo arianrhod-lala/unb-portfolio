@@ -1,5 +1,7 @@
 # UNB Portfolio (React + TypeScript + Vite)
 
+Design changes use a new branch and local commits. Only the user pushes to the remote repository. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and commit-attribution policy.
+
     npm install
     npm run dev
 

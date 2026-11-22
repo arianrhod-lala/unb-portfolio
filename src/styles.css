@@ -57,7 +57,8 @@ button svg { flex: none; }
 .dropdown-item { display: flex; flex-direction: column; gap: 4px; width: 100%; border: 0; border-radius: 4px; padding: 12px; text-align: left; background: transparent; font-size: 14px; }
 .dropdown-item:hover { background: rgb(255 255 255 / 0.08); }
 .dropdown-item small { color: var(--night-secondary); font-size: 12px; }
-.home { background: var(--night); color: var(--text-home); min-height: calc(100dvh - var(--nav-h)); padding: 80px max(24px, calc((100% - 1280px) / 2)) 24px; display: flex; flex-direction: column; }
+.home { position: relative; isolation: isolate; background: var(--night); color: var(--text-home); min-height: calc(100dvh - var(--nav-h)); padding: 80px max(24px, calc((100% - 1280px) / 2)) 24px; display: flex; flex-direction: column; }
+.home::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: url('/images/rail-track-background.svg') center / cover no-repeat; opacity: 0.16; }
 .home-content-wrap { display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 80px; flex: 1; padding-bottom: 72px; animation: enter 300ms ease-out; }
 .home-location { color: var(--night-secondary); display: flex; align-items: center; gap: 12px; font-size: 13px; margin: 0 0 32px; }
 .station-marker { width: 12px; height: 12px; border: 2px solid var(--lrt-green); border-radius: 50%; flex: none; }
