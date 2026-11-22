@@ -34,7 +34,7 @@ export default function PageRailway({ activeSection }: { activeSection: string }
       const scene = bendRef.current.find(event => event.amplitude && center > event.start && center < event.end);
       const sceneOffset = scene ? trackOffset(center, [scene]) : 0;
       const closeup = scene ? Math.min(1, Math.max(0, sceneOffset / scene.amplitude) * 1.4) : 0;
-      const zoom = 1 + ((scene?.maxZoom ?? 1) - 1) * closeup;
+      const zoom = 1 + (RAILWAY_TRIAL.maxZoom - 1) * closeup;
       track.dataset.event = motion.matches ? 'parked' : scene?.id ?? 'travel';
       train.style.transform = `translate(${offset}px, ${y}px)`;
       train.style.setProperty('--train-zoom', String(zoom));
@@ -55,7 +55,7 @@ export default function PageRailway({ activeSection }: { activeSection: string }
         if (!config) return [];
         const start = Math.max(0, stop.top - 180);
         const end = Math.min(stop.top + 300, (next[index + 1]?.top ?? Infinity) - 180, track.clientHeight);
-        return [{ id: config.id, start, end, amplitude: enabled && end > start ? config.amplitude : 0, maxZoom: config.maxZoom }];
+        return [{ id: config.id, start, end, amplitude: enabled && end > start ? config.amplitude : 0 }];
       });
       setPaths(railPaths(track.clientHeight, bendRef.current));
       setStations(previous => previous.length === next.length && previous.every((stop, index) => stop.top === next[index].top) ? previous : next);

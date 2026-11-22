@@ -1,11 +1,11 @@
 // Set enabled to false to park this experiment without changing the page layout.
 export const RAILWAY_TRIAL = { enabled: true, bendPixels: 24, maxZoom: 1.35 };
 export interface TrackBend { start: number; end: number; amplitude: number }
-export interface StationScene extends TrackBend { id: string; maxZoom: number }
+export interface StationScene extends TrackBend { id: string }
 export const STATION_SCENES = [
-  { id: 'about', amplitude: RAILWAY_TRIAL.bendPixels, maxZoom: RAILWAY_TRIAL.maxZoom },
-  { id: 'team', amplitude: -20, maxZoom: 1.1 },
-  { id: 'contact', amplitude: 12, maxZoom: 1 },
+  { id: 'about', amplitude: RAILWAY_TRIAL.bendPixels },
+  { id: 'team', amplitude: -20 },
+  { id: 'contact', amplitude: 12 },
 ];
 
 export function trackOffset(y: number, bends: readonly TrackBend[]): number {

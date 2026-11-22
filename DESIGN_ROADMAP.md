@@ -2,7 +2,13 @@
 
 Updated 2026-11-23. All new designs are developed on a new branch and committed locally using the user's configured Git identity. Only the user pushes to the repository. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Current revision: varied station scenes and member passes
+## Current revision: consistent 35% zoom
+
+Final adjustment requested by the user: all bends must use the same 35% close-up. About, Our Team, and Get in Touch now share `RAILWAY_TRIAL.maxZoom = 1.35`; individual station zoom overrides are removed. The same normalized approach curve controls the buildup and peak at each bend, while track direction and headlights retain their station-specific treatments.
+
+Platform headings, member-pass profiles, the station display, and page layout remain as approved. Mobile/reduced-motion views retain their unzoomed fallback. Verified on `design/uniform-train-zoom`: production build passes; browser regression first reproduced Team's old 1.1 scale, then passed with a 1.35 peak at all three bends, lane clearance, reduced-motion reset, and all five profiles at three widths. Local commit only, no push.
+
+## Previous revision: varied station scenes and member passes
 
 The user approved the platform style and announcements, requested a smaller 30–35% zoom, and wanted more than one railway event. This revision uses 35% and adds variation without moving page content.
 
