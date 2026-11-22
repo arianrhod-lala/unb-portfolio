@@ -2,7 +2,22 @@
 
 Updated 2026-11-23. All new designs are developed on a new branch and committed locally using the user's configured Git identity. Only the user pushes to the repository. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Current revision: central railway
+## Current revision: station arrivals and motion trial
+
+The user requested removal of the competing hero background tracks, stronger About and Team station headings, and a restrained transition experiment. They confirmed that the departure board and ticket cards should stay in the next iteration.
+
+- Remove the old hero rail layer and its unused SVG; retain the continuous central railway.
+- Give About and Team platform-style heading panels with station labels and small connecting lines on desktop.
+- Reveal heading content once from scale 0.97 and opacity 0. Keep the panel and page layout steady, with no looping entrances.
+- Trial one 24px bend near About and a maximum 1.12 train close-up. The text and controls never zoom, and the train remains within the 144px lane. Scroll remains native and reversible.
+- Disable the bend/zoom on smaller screens and when reduced motion is requested. Park the train and immediately reveal headings for reduced motion.
+- Keep the trial easy to remove: `RAILWAY_TRIAL` in `src/utils/journeyMotion.ts` controls the experiment. Set `enabled` to `false` to disable the bend, zoom, and heading entrance effects without undoing the cleanup or platform design.
+
+Implementation order: cleanup, station heading design, then one bounded motion trial. Status: implemented and verified on `design/station-arrivals`; local commit only, no push.
+
+Validation: the production build passes (42 modules). Browser checks pass for the removed hero layer, heading entrances, bounded bend/zoom, central lane clearance, expanding About content, reduced-motion reset, six responsive widths, team pinning and profile return position, profile focus/history, and link data. Independent review found no material issues. Desktop arrival and mobile heading captures were inspected. The smallest mobile heading was compacted after a regression test caught insufficient room for pinning. Safari and physical touch devices were not tested.
+
+## Previous revision: central railway
 
 Approved direction: make the train journey the main visual feature while preserving the professional IT identity and giving it more whitespace.
 
@@ -28,7 +43,7 @@ Use a station departure-board treatment to make project work easy to scan. Possi
 
 Before implementation, confirm which existing project entries are real and ready to share. Do not invent delivery dates, completion statuses, metrics, clients, or working links to fill the board. Keep text readable and keyboard navigation straightforward; a decorative split-flap animation is optional and must respect reduced motion.
 
-Status: recorded for a future design iteration; not implemented in the central-railway revision.
+Status: recorded for the next design iteration; explicitly deferred while the railway and station transitions are refined.
 
 ## Planned next: ticket-style project cards
 
@@ -36,7 +51,7 @@ Explore project cards inspired by transit tickets: a restrained perforation/cuto
 
 These can complement the departure board as a detailed view of selected projects. Keep the familiar project action labels and accessible focus states. The ticket treatment is visual; it should not imply a purchase or require visitors to understand transit terminology.
 
-Status: recorded for a future design iteration; not implemented in the central-railway revision.
+Status: recorded for the next design iteration; explicitly deferred while the railway and station transitions are refined.
 
 ## Evidence and remaining work
 

@@ -1,7 +1,7 @@
 import { team } from "../data/team";
 import Socials from "../components/Socials";
 import { useTeamScroll } from "../hooks/useTeamScroll";
-import StationSign from "../components/StationSign";
+import StationHeading from "../components/StationHeading";
 
 interface TeamProps {
   onSelectMember: (id: string) => void;
@@ -16,11 +16,7 @@ export default function Team({ onSelectMember }: TeamProps) {
       <div className="team-container split">
         {/* Left Title Column - Aligned to About Us and Contact Us */}
         <div className="team-title-col">
-          <h2 className="display team-display-title">
-            Our team
-          </h2>
-
-          <StationSign number="03" name="Team platform" />
+          <StationHeading number="03" name="Team platform" title="Our team" />
 
           <p className="team-subtext">
             Five members, different interests. Explore the people behind UNB and the technologies they’re learning and building with.

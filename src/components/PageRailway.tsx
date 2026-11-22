@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import TrainIllustration from './TrainIllustration';
+import { RAILWAY_TRIAL, railPaths, trackOffset, trackAngle, type TrackBend } from '../utils/journeyMotion';
 
 const stops = ['home', 'about', 'team', 'contact'];
 
@@ -7,6 +8,8 @@ export default function PageRailway({ activeSection }: { activeSection: string }
   const trackRef = useRef<HTMLDivElement>(null);
   const trainRef = useRef<HTMLDivElement>(null);
   const [stations, setStations] = useState<Array<{ id: string; top: number }>>([]);
+  const bendRef = useRef<TrackBend>({ start: 0, end: 1, amplitude: 0 });
+  const [paths, setPaths] = useState(() => railPaths(1, bendRef.current));
 
   useEffect(() => {
     const track = trackRef.current;
@@ -14,6 +17,7 @@ export default function PageRailway({ activeSection }: { activeSection: string }
     const root = track?.parentElement;
     if (!track || !train || !root) return;
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const desktop = window.matchMedia('(min-width: 1101px)');
     let frame = 0;
     let measureFrame = 0;
     let disposed = false;
@@ -23,7 +27,13 @@ export default function PageRailway({ activeSection }: { activeSection: string }
       frame = 0;
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       const progress = Math.max(0, Math.min(1, window.scrollY / maxScroll));
-      train.style.transform = `translateY(${motion.matches ? 0 : progress * travel}px)`;
+      const y = motion.matches ? 0 : progress * travel;
+      const center = y + train.offsetHeight / 2;
+      const offset = motion.matches ? 0 : trackOffset(center, bendRef.current);
+      const zoom = 1 + (RAILWAY_TRIAL.maxZoom - 1) * (bendRef.current.amplitude ? offset / bendRef.current.amplitude : 0);
+      train.style.transform = `translate(${offset}px, ${y}px)`;
+      train.style.setProperty('--train-zoom', String(zoom));
+      train.style.setProperty('--train-angle', `${motion.matches ? 0 : trackAngle(center, bendRef.current)}deg`);
     };
     const measure = () => {
       measureFrame = 0;
@@ -34,6 +44,9 @@ export default function PageRailway({ activeSection }: { activeSection: string }
         const section = document.getElementById(id);
         return section ? [{ id, top: Math.max(0, section.getBoundingClientRect().top - trackTop + 48) }] : [];
       });
+      const about = next.find(stop => stop.id === 'about')?.top ?? 0;
+      bendRef.current = { start: about - 180, end: about + 300, amplitude: RAILWAY_TRIAL.enabled && desktop.matches && !motion.matches ? RAILWAY_TRIAL.bendPixels : 0 };
+      setPaths(railPaths(track.clientHeight, bendRef.current));
       setStations(previous => previous.length === next.length && previous.every((stop, index) => stop.top === next[index].top) ? previous : next);
       update();
     };
@@ -64,14 +77,13 @@ export default function PageRailway({ activeSection }: { activeSection: string }
   return (
     <div ref={trackRef} className="journey-track" aria-hidden="true">
       <svg className="journey-rails" width="44" height="100%" focusable="false">
-        <defs><pattern id="journey-sleepers" width="44" height="28" patternUnits="userSpaceOnUse"><path d="M2 14H42" stroke="currentColor" strokeWidth="2" /></pattern></defs>
-        <rect width="44" height="100%" fill="url(#journey-sleepers)" />
-        <line x1="12" x2="12" y1="0" y2="100%" stroke="currentColor" strokeWidth="1.5" />
-        <line x1="32" x2="32" y1="0" y2="100%" stroke="currentColor" strokeWidth="1.5" />
+        <path d={paths.sleepers} stroke="currentColor" strokeWidth="40" strokeDasharray="2 26" fill="none" />
+        <path d={paths.left} stroke="currentColor" strokeWidth="1.5" fill="none" />
+        <path d={paths.right} stroke="currentColor" strokeWidth="1.5" fill="none" />
       </svg>
-      {stations.map((stop, index) => <span key={stop.id} data-stop={stop.id} className={`journey-station${stop.id === activeSection ? ' is-active' : ''}`} style={{ top: stop.top }}>0{index + 1}</span>)}
+      {stations.map((stop, index) => <span key={stop.id} data-stop={stop.id} className={`journey-station${stop.id === activeSection ? ' is-active' : ''}`} style={{ top: stop.top, left: trackOffset(stop.top, bendRef.current) }}>0{index + 1}</span>)}
       <div ref={trainRef} className="journey-train">
-        <TrainIllustration />
+        <div className="journey-train__model"><TrainIllustration /></div>
       </div>
       <span className="journey-buffer" />
     </div>
