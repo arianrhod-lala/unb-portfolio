@@ -1,6 +1,7 @@
 import { team } from "../data/team";
 import Socials from "../components/Socials";
 import { useTeamScroll } from "../hooks/useTeamScroll";
+import StationSign from "../components/StationSign";
 
 interface TeamProps {
   onSelectMember: (id: string) => void;
@@ -19,10 +20,7 @@ export default function Team({ onSelectMember }: TeamProps) {
             Our team
           </h2>
 
-          <div className="station-badge">
-            <span className="station-dot" />
-            <span className="station-text">The people on this route</span>
-          </div>
+          <StationSign number="03" name="Team platform" />
 
           <p className="team-subtext">
             Five members, different interests. Explore the people behind UNB and the technologies they’re learning and building with.

@@ -7,6 +7,7 @@ import About from "./pages/About";
 import Team from "./pages/Team";
 import Contact from "./pages/Contact";
 import ProfileModal from "./components/ProfileModal";
+import PageRailway from "./components/PageRailway";
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>("home");
@@ -121,6 +122,7 @@ export default function App() {
 
   return (
     <div className="portfolio-app">
+      <PageRailway />
       <Navbar
         activeSection={activeSection}
         variant={navbarVariant}

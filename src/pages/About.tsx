@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { scrollBehavior } from "../utils/motion";
+import StationSign from "../components/StationSign";
 
 export default function About() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -27,10 +28,7 @@ export default function About() {
               About us
             </h2>
             <p className="about-subtitle">One connection. Different perspectives.</p>
-            <div className="station-badge">
-              <span className="station-dot" />
-              <span className="station-text">LRT-1 · UN Avenue</span>
-            </div>
+            <StationSign number="02" name="The collective" />
           </div>
 
           <div className="about-desc-col">
