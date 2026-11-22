@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
+import TrainIllustration from './TrainIllustration';
 
 const stops = ['home', 'about', 'team', 'contact'];
 
-export default function PageRailway() {
+export default function PageRailway({ activeSection }: { activeSection: string }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const trainRef = useRef<HTMLDivElement>(null);
   const [stations, setStations] = useState<Array<{ id: string; top: number }>>([]);
@@ -62,28 +63,15 @@ export default function PageRailway() {
 
   return (
     <div ref={trackRef} className="journey-track" aria-hidden="true">
-      <svg className="journey-rails" width="28" height="100%" focusable="false">
-        <defs><pattern id="journey-sleepers" width="28" height="24" patternUnits="userSpaceOnUse"><path d="M2 12H26" stroke="currentColor" strokeWidth="2" /></pattern></defs>
-        <rect width="28" height="100%" fill="url(#journey-sleepers)" />
-        <line x1="8" x2="8" y1="0" y2="100%" stroke="currentColor" strokeWidth="1.5" />
-        <line x1="20" x2="20" y1="0" y2="100%" stroke="currentColor" strokeWidth="1.5" />
+      <svg className="journey-rails" width="44" height="100%" focusable="false">
+        <defs><pattern id="journey-sleepers" width="44" height="28" patternUnits="userSpaceOnUse"><path d="M2 14H42" stroke="currentColor" strokeWidth="2" /></pattern></defs>
+        <rect width="44" height="100%" fill="url(#journey-sleepers)" />
+        <line x1="12" x2="12" y1="0" y2="100%" stroke="currentColor" strokeWidth="1.5" />
+        <line x1="32" x2="32" y1="0" y2="100%" stroke="currentColor" strokeWidth="1.5" />
       </svg>
-      {stations.map((stop, index) => <span key={stop.id} data-stop={stop.id} className="journey-station" style={{ top: stop.top }}>0{index + 1}</span>)}
+      {stations.map((stop, index) => <span key={stop.id} data-stop={stop.id} className={`journey-station${stop.id === activeSection ? ' is-active' : ''}`} style={{ top: stop.top }}>0{index + 1}</span>)}
       <div ref={trainRef} className="journey-train">
-        <svg viewBox="0 0 28 88" fill="none" focusable="false">
-          <g stroke="var(--main)" strokeWidth="1.5">
-            <rect x="2" y="7" width="24" height="22" rx="3" fill="var(--main)" />
-            <rect x="2" y="54" width="24" height="22" rx="3" fill="var(--main)" />
-            <path d="M11 37h6v13h-6z" fill="var(--main)" />
-            <rect x="4" y="1" width="20" height="39" rx="5" fill="var(--text-home)" />
-            <path d="M4 52a5 5 0 0 1 5-5h10a5 5 0 0 1 5 5v23c0 7-4 12-10 12S4 82 4 75V52Z" fill="var(--lrt-green)" />
-            <rect x="8" y="7" width="12" height="12" rx="2" fill="var(--night)" />
-            <rect x="8" y="24" width="12" height="10" rx="2" fill="var(--night)" />
-            <rect x="8" y="53" width="12" height="12" rx="2" fill="var(--night)" />
-            <path d="M8 70h12" />
-          </g>
-          <path d="M8 78h3m6 0h3" stroke="var(--text-home)" strokeWidth="2" strokeLinecap="round" />
-        </svg>
+        <TrainIllustration />
       </div>
       <span className="journey-buffer" />
     </div>

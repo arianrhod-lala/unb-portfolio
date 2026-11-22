@@ -121,8 +121,8 @@ export default function App() {
   const navbarVariant = activeSection === "home" ? "dark" : "light";
 
   return (
-    <div className="portfolio-app">
-      <PageRailway />
+    <div className="portfolio-app" data-active-section={activeSection}>
+      <PageRailway activeSection={activeSection} />
       <Navbar
         activeSection={activeSection}
         variant={navbarVariant}
