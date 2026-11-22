@@ -11,6 +11,7 @@ interface NavbarProps {
 export default function Navbar({ activeSection, variant, onNavigate, onSelectMember }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -51,32 +52,33 @@ export default function Navbar({ activeSection, variant, onNavigate, onSelectMem
 
       <nav aria-label="Main Navigation">
         <button
-          className={navClass("home")}
+          className={navClass("home")} aria-current={activeSection === "home" ? "location" : undefined}
           onClick={() => onNavigate("home")}
         >
-          HOME
+          Home
         </button>
 
         <button
-          className={navClass("about")}
+          className={navClass("about")} aria-current={activeSection === "about" ? "location" : undefined}
           onClick={() => onNavigate("about")}
         >
-          ABOUT US
+          About
         </button>
 
         <div className="dropdown" ref={wrapRef}>
           <button
-            className={navClass("team")}
+            className={navClass("team")} aria-current={activeSection === "team" ? "location" : undefined}
             onClick={() => {
               onNavigate("team");
-              setOpen((prev) => !prev);
+              setOpen(false);
             }}
           >
-            OUR TEAM
+            Team
           </button>
           <button
+            ref={toggleRef}
             className="dropdown-toggle"
-            aria-haspopup="menu"
+            aria-controls="team-member-list"
             aria-expanded={open}
             aria-label="Toggle team member list"
             onClick={(e) => {
@@ -102,15 +104,14 @@ export default function Navbar({ activeSection, variant, onNavigate, onSelectMem
             </svg>
           </button>
           {open && (
-            <ul className="dropdown-menu" role="menu">
+            <ul className="dropdown-menu" id="team-member-list">
               {team.map((m) => (
-                <li key={m.id} role="none">
+                <li key={m.id}>
                   <button
-                    role="menuitem"
                     className="dropdown-item"
                     onClick={() => {
                       setOpen(false);
-                      onNavigate("team");
+                      toggleRef.current?.focus();
                       onSelectMember(m.id);
                     }}
                   >
@@ -124,10 +125,10 @@ export default function Navbar({ activeSection, variant, onNavigate, onSelectMem
         </div>
 
         <button
-          className={navClass("contact")}
+          className={navClass("contact")} aria-current={activeSection === "contact" ? "location" : undefined}
           onClick={() => onNavigate("contact")}
         >
-          CONTACT US
+          Contact
         </button>
       </nav>
     </header>

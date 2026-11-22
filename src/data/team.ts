@@ -9,6 +9,7 @@ export interface Member {
   name: string;
   handle: string;
   photo: string;
+  website?: string; // Add the member's real absolute https:// URL when available.
   accent: string; // card border colour
   tagline: string;
   bio: string;
@@ -26,6 +27,7 @@ export const team: Member[] = [
     name: "Kobe",
     handle: "@swilylent",
     photo: "/images/kobe.jpg?v=4",
+    website: "https://business-portfolio-kobecuison-omega.vercel.app/",
     accent: "#302d2b",
     tagline: "Frontend Architect & Creative Designer",
     bio: "DOST Scholar and BSIT student who turns challenges into growth. I thrive on learning, adapt quickly, and commit fully to what I start. Focused, curious, and ready to take on opportunities that push me beyond my comfort zone.",
@@ -42,6 +44,7 @@ export const team: Member[] = [
     name: "Ian",
     handle: "@iansane222",
     photo: "/images/ian.jpg?v=4",
+    website: "https://ianlester.netlify.app",
     accent: "#6b0f2a",
     tagline: "Visual Artist & Creative Technologist",
     bio: "lorem ipsum dolor sit amet consectetur adipiscing elit excepteur eiusmod quas mollit ut ex nulla ut ullamco sunt sint at cum placeat excepturi corrupti sit adipiscing lorem ipsum dolor sit amet consectetur",
@@ -58,6 +61,7 @@ export const team: Member[] = [
     name: "Tyrone",
     handle: "@r.on_r.on",
     photo: "/images/tyrone.jpg?v=4",
+    website: "https://tyronejohn.netlify.app/",
     accent: "#6b0f2a",
     tagline: "Full-Stack Developer & Systems Enthusiast",
     bio: "lorem ipsum dolor sit amet consectetur adipiscing elit exceptur eiusmod quas mollit ut ex nulla ut ullamco sunt sint at cum placeat excepturi corrupti sit adipiscing soluta ullamco et dolores praesentium",
@@ -74,6 +78,7 @@ export const team: Member[] = [
     name: "Allen",
     handle: "@mygabxx_",
     photo: "/images/allen.jpg?v=4",
+    website: "https://allenpasion05-droid.github.io/Portfolio_v1/",
     accent: "#6b0f2a",
     tagline: "Software Engineer & Mobile Specialist",
     bio: "Lorem ipsum dolor sit amet consectetur adipiscing corrupti sit adipiscing soluta ullamco et dolores praesentium est voluptas assumenda sint imperdiet nihil qui dolor et expedita tempor omnis ut in aute eu cupiditate in nulla",
@@ -90,6 +95,7 @@ export const team: Member[] = [
     name: "Tristan",
     handle: "@te._.ej",
     photo: "/images/tristan.jpg?v=4",
+    website: "https://tristan1804.github.io/Personal-Portfolio/",
     accent: "#6b0f2a",
     tagline: "Backend Engineer & Cloud Architect",
     bio: "Lorem ipsum dolor sit amet consectetur adipiscing elit excepteur eiusmod quas mollit ut ex nulla ut ullamco sunt sint at cum placeat excepturi corrupti sit adipiscing soluta ullamco et dolores praesentium",

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { scrollBehavior } from "../utils/motion";
 
 export default function About() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -9,7 +10,7 @@ export default function About() {
       // Smoothly return to the top of the About section when shrinking
       const el = document.getElementById("about");
       if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
+        el.scrollIntoView({ behavior: scrollBehavior() });
       }
     } else {
       setIsExpanded(true);
@@ -23,39 +24,34 @@ export default function About() {
         <div className="about-header split">
           <div className="about-title-col">
             <h2 className="display about-display-title">
-              ABOUT<br />US
+              About us
             </h2>
-            <p className="about-subtitle">The Collective & Origin Story</p>
+            <p className="about-subtitle">One connection. Different perspectives.</p>
             <div className="station-badge">
               <span className="station-dot" />
-              <span className="station-text">LRT-1 UN AVENUE STATION</span>
+              <span className="station-text">LRT-1 · UN Avenue</span>
             </div>
           </div>
 
           <div className="about-desc-col">
             <p className="about-lead-text">
-              <strong>UNB</strong> (United Nation Boys) is a creative and engineering collective
-              forged in the lecture halls, workshop laboratories, and campus grounds of <strong>TUP-Manila</strong> (Technological
-              University of the Philippines). Unified by a deep curiosity for technology and design, we crossed paths as
-              engineering students driven by a mutual instinct to build, experiment, and turn ambitious ideas into functional realities.
+              <strong>UNB</strong> (United Nation Boys) is an IT student collective from <strong>TUP-Manila</strong>.
+              Our interests span software development, systems, and digital design. This is where we share what we are learning and connect our individual work.
             </p>
             <p className="about-body-text">
-              What began as daily train ride conversations waiting on the platform of the United Nations LRT-1 Station quickly
-              matured into our creative incubator. Every afternoon commute became an open forum for exchanging code architectures,
-              critiquing user interfaces, untangling thesis problems, and sharing personal goals—transforming routine transit through
-              Manila's historic university belt into the foundation of our collective identity.
+              Our name comes from the United Nations LRT station, a familiar stop on the way home.
+              Shared commutes brought us together; a curiosity for technology gives us more routes to explore.
             </p>
             <p className="about-body-text">
-              Through demanding academic deadlines, collaborative hackathons, competitive capstone projects, and real-world freelance
-              dispatches, our bond evolved from university peers into a dedicated brotherhood. Today, UNB stands as both an engineering alliance
-              and a lifelong creative cohort, combining our individual specializations across systems, design, web, and cloud infrastructure
-              to craft polished, purposeful digital experiences.
+              Meet the members, explore their listed skills, and visit their personal websites as they become available.
+              The network grows with the work we choose to share.
             </p>
           </div>
         </div>
 
         {/* Expandable / Collapsible Subsections */}
         <div
+          id="about-stories"
           className={`about-subsections-expandable ${
             isExpanded ? "expanded" : "collapsed"
           }`}
@@ -75,7 +71,7 @@ export default function About() {
                     />
                     <div className="sub-banner-overlay" />
                     <div className="sub-banner-content">
-                      <h3 className="sub-banner-title">TUP MANILA</h3>
+                      <h3 className="sub-banner-title">TUP-Manila</h3>
                       <p className="sub-banner-sub">Technological University of the Philippines</p>
                     </div>
                   </div>
@@ -114,7 +110,7 @@ export default function About() {
                     />
                     <div className="sub-banner-overlay" />
                     <div className="sub-banner-content">
-                      <h3 className="sub-banner-title">UN STATION</h3>
+                      <h3 className="sub-banner-title">UN Avenue</h3>
                       <p className="sub-banner-sub">LRT-1 Station Origin & Daily Reunions</p>
                     </div>
                   </div>
@@ -135,7 +131,7 @@ export default function About() {
                     />
                     <div className="sub-banner-overlay" />
                     <div className="sub-banner-content">
-                      <h3 className="sub-banner-title">BROTHERHOOD</h3>
+                      <h3 className="sub-banner-title">Brotherhood</h3>
                       <p className="sub-banner-sub">Built on genuine camaraderie, shared grit, and shared dreams</p>
                     </div>
                   </div>
@@ -161,10 +157,11 @@ export default function About() {
             className="about-minimal-toggle"
             onClick={handleToggle}
             aria-expanded={isExpanded}
-            aria-label={isExpanded ? "Collapse subsections" : "Expand subsections"}
+            aria-controls="about-stories"
+            aria-label={isExpanded ? "Less about us" : "More about us"}
           >
             <span className="toggle-label">
-              {isExpanded ? "Less About Us" : "More About Us"}
+              {isExpanded ? "Less about us" : "More about us"}
             </span>
             <svg
               className={`toggle-chevron-circle ${isExpanded ? "open" : ""}`}

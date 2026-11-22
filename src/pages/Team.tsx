@@ -1,69 +1,59 @@
-import { useRef } from "react";
 import { team } from "../data/team";
 import Socials from "../components/Socials";
+import { useTeamScroll } from "../hooks/useTeamScroll";
 
 interface TeamProps {
   onSelectMember: (id: string) => void;
 }
 
 export default function Team({ onSelectMember }: TeamProps) {
-  const scrollerRef = useRef<HTMLDivElement>(null);
+  const { sectionRef, pinRef, scrollerRef, isPinned, moveCards, onTrackKeyDown, onCardFocus } = useTeamScroll();
 
   return (
-    <section id="team" className="page team-section">
-      {/* Edge-to-edge Railway Track Graphic Spanning the Entire Section */}
-      <div className="team-full-track" aria-hidden="true">
-        <svg className="track-svg" width="100%" height="220" preserveAspectRatio="none">
-          <defs>
-            <pattern id="train-track-pattern" width="120" height="220" patternUnits="userSpaceOnUse">
-              <rect x="0" y="5" width="34" height="210" rx="3" fill="#d9d9d9" />
-              <rect x="0" y="22" width="120" height="20" fill="#d0d0d0" />
-              <rect x="0" y="178" width="120" height="20" fill="#d0d0d0" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#train-track-pattern)" />
-        </svg>
-      </div>
-
+    <section ref={sectionRef} id="team" className="page team-section" aria-label="Our team">
+      <div ref={pinRef} className="team-pin">
       <div className="team-container split">
         {/* Left Title Column - Aligned to About Us and Contact Us */}
         <div className="team-title-col">
           <h2 className="display team-display-title">
-            OUR<br />TEAM
+            Our team
           </h2>
 
           <div className="station-badge">
             <span className="station-dot" />
-            <span className="station-text">LRT-1 COMMUTER SQUAD</span>
+            <span className="station-text">The people on this route</span>
           </div>
 
           <p className="team-subtext">
-            Meet the five members of UNB. A collective of tech builders, designers,
-            and creative thinkers forged through daily train rides from TUP-Manila.
+            Five members, different interests. Explore the people behind UNB and the technologies they’re learning and building with.
           </p>
+          <div className="team-station-index" aria-label="Member index">
+            {team.map((member, index) => <button key={member.id} onClick={() => onSelectMember(member.id)}><span aria-hidden="true">{index + 1}</span>{member.name}<span aria-hidden="true">↗</span></button>)}
+          </div>
         </div>
 
         {/* Right Track Area with Fully Scrollable Horizontal Cards */}
         <div className="team-track-area">
-          {/* Mobile track graphic when columns are stacked */}
-          <div className="team-mobile-track" aria-hidden="true">
-            <svg className="track-svg" width="100%" height="220" preserveAspectRatio="none">
-              <rect width="100%" height="100%" fill="url(#train-track-pattern)" />
-            </svg>
+          <div className="team-scroll-controls">
+            <span>{isPinned ? 'Scroll down to explore all five' : 'Meet all five members'}</span>
+            <div>
+              <button aria-label="Previous team cards" onClick={() => moveCards(-1)}>←</button>
+              <button aria-label="Next team cards" onClick={() => moveCards(1)}>→</button>
+            </div>
           </div>
-
           <div
             ref={scrollerRef}
             className="team-scroller"
             tabIndex={0}
             aria-label="Team member cards across tracks"
+            onKeyDown={onTrackKeyDown}
+            onFocusCapture={onCardFocus}
           >
             <div className="team-cards-convoy">
               {team.map((m) => (
                 <article
                   className="member-card"
                   key={m.id}
-                  onClick={() => onSelectMember(m.id)}
                 >
                   <div className="photo-frame" style={{ borderColor: m.accent }}>
                     <img
@@ -74,9 +64,10 @@ export default function Team({ onSelectMember }: TeamProps) {
                     />
                   </div>
 
-                  <h3 className="member-handle">{m.handle}</h3>
+                  <h3 className="member-handle">{m.name}</h3>
+                  <p className="member-username">{m.handle}</p>
 
-                  <p className="member-bio">{m.bio}</p>
+                  <p className="member-bio">{m.skills.slice(0, 3).join(' · ')}</p>
 
                   <div className="card-actions">
                     <button
@@ -87,7 +78,7 @@ export default function Team({ onSelectMember }: TeamProps) {
                       }}
                       aria-label={`View full profile of ${m.name}`}
                     >
-                      View Profile
+                      View profile
                     </button>
                     <div onClick={(e) => e.stopPropagation()}>
                       <Socials links={m.socials} />
@@ -98,6 +89,7 @@ export default function Team({ onSelectMember }: TeamProps) {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

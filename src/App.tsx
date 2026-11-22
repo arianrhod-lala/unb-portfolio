@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { scrollBehavior } from "./utils/motion";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -9,14 +10,15 @@ import ProfileModal from "./components/ProfileModal";
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>("home");
-  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const selectedMemberId = location.pathname.match(/^\/team\/([^/]+)\/?$/)?.[1] ?? null;
 
   const isProgrammaticScroll = useRef(false);
   const scrollTimeout = useRef<number | null>(null);
 
   // Scroll to section helper with instant active indicator update
-  const scrollToSection = (sectionId: string) => {
+  const scrollToSection = useCallback((sectionId: string) => {
     setActiveSection(sectionId);
     isProgrammaticScroll.current = true;
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
@@ -26,38 +28,41 @@ export default function App() {
 
     const el = document.getElementById(sectionId);
     if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+      el.scrollIntoView({ behavior: scrollBehavior() });
     }
-  };
+  }, []);
 
   // Open member profile modal
   const handleSelectMember = (memberId: string) => {
-    setSelectedMemberId(memberId);
-    window.history.pushState(null, "", `/team/${memberId}`);
+    navigate(`/team/${memberId}`, { state: {
+      returnSection: location.state?.returnSection ?? activeSection,
+      returnScrollY: location.state?.returnScrollY ?? window.scrollY,
+    } });
   };
 
   // Close member profile modal
-  const handleCloseMember = () => {
-    setSelectedMemberId(null);
-    window.history.pushState(null, "", "/#team");
-  };
+  const handleCloseMember = useCallback(() => {
+    navigate(`/#${location.state?.returnSection ?? 'team'}`, {
+      state: { restoreScrollY: location.state?.returnScrollY },
+    });
+  }, [navigate, location.state]);
 
   // Check URL pathname for direct /team/:id access
   useEffect(() => {
-    const match = location.pathname.match(/^\/team\/([^/]+)/);
-    if (match && match[1]) {
-      setSelectedMemberId(match[1]);
-    } else {
-      setSelectedMemberId(null);
-    }
-
     if (location.hash) {
       const targetId = location.hash.replace("#", "");
-      setTimeout(() => {
-        scrollToSection(targetId);
-      }, 100);
+      const timer = window.setTimeout(() => {
+        const restore = location.state?.restoreScrollY;
+        if (typeof restore === 'number' && Number.isFinite(restore)) {
+          setActiveSection(targetId);
+          window.scrollTo({ top: restore, behavior: 'instant' });
+        } else {
+          scrollToSection(targetId);
+        }
+      }, 0);
+      return () => window.clearTimeout(timer);
     }
-  }, [location.pathname, location.hash]);
+  }, [location.pathname, location.hash, location.state, scrollToSection]);
 
   // Robust scroll spy to accurately track sections (Home, About, Team, Contact)
   useEffect(() => {
@@ -124,7 +129,7 @@ export default function App() {
       />
 
       <main className="portfolio-main">
-        <Home onExplore={() => scrollToSection("about")} />
+        <Home onNavigate={scrollToSection} onSelectMember={handleSelectMember} />
         <About />
         <Team onSelectMember={handleSelectMember} />
         <Contact />

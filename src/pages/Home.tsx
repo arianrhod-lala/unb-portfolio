@@ -1,59 +1,30 @@
-import { FacebookIcon, InstagramIcon, GithubIcon } from "../components/Icons";
+﻿import TransitNetwork from '../components/TransitNetwork';
 
 interface HomeProps {
-  onExplore?: () => void;
+  onNavigate: (section: string) => void;
+  onSelectMember: (id: string) => void;
 }
 
-export default function Home({ onExplore: _onExplore }: HomeProps) {
+export default function Home({ onNavigate, onSelectMember }: HomeProps) {
   return (
-    <section id="home" className="home">
-      {/* Background layer: National Museum of Natural History */}
-      <div className="home-bg-layer" aria-hidden="true" />
-
-      {/* Main Content: Left text & Right group photo */}
+    <section id="home" className="home" aria-labelledby="home-title">
       <div className="home-content-wrap">
         <div className="home-text-block">
-          <h1 className="home-title">UNB</h1>
-          <p className="home-desc">
-            A circle of friends brought together at TUP-Manila, named after the
-            United Nations LRT Station we often pass through on our way
-            home. Built on shared experiences, lasting friendships, and
-            unforgettable memories.
-          </p>
+          <p className="home-location"><span className="station-marker" aria-hidden="true" />TUP-Manila · IT student collective</p>
+          <h1 id="home-title" className="home-title">Different routes.<br />Shared direction.</h1>
+          <p className="home-desc">We’re UNB. A collective exploring software, systems, and digital design. Connected by the commute. Building on what we learn.</p>
+          <div className="home-actions">
+            <button className="pill hero-primary" onClick={() => onNavigate('team')}>Meet the team <span aria-hidden="true">↗</span></button>
+            <button className="hero-secondary" onClick={() => onNavigate('contact')}>Contact us <span aria-hidden="true">→</span></button>
+          </div>
         </div>
-
-        {/* Group photo cutout positioned in the bottom-right quadrant */}
-        <div className="home-group-wrap" aria-hidden="true">
-          <img
-            src="/images/group.png"
-            alt="The five members of UNB in their uniforms"
-            className="home-group-img"
-          />
-        </div>
+        <TransitNetwork onSelectMember={onSelectMember} />
       </div>
-
-      {/* Solid white horizontal bar spanning across the bottom */}
-      <div className="home-bar" aria-hidden="true" />
-
-      {/* Hero Footer */}
-      <footer className="home-footer">
-        <div className="home-contact-info">
-          <a href="tel:+639994737196" className="home-link">+63 999 473 7196</a>
-          <a href="mailto:unitednationboys@gmail.com" className="home-link">unitednationboys@gmail.com</a>
-        </div>
-
-        <div className="socials home-socials">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-            <FacebookIcon />
-          </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-            <InstagramIcon />
-          </a>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-            <GithubIcon />
-          </a>
-        </div>
-      </footer>
+      <div className="home-footer">
+        <span><span className="footer-route" aria-hidden="true" />United Nation Boys</span>
+        <span>Rooted in Manila. Connected through IT.</span>
+        <button onClick={() => onNavigate('about')} aria-label="Continue to About">Next stop: About <span aria-hidden="true">↓</span></button>
+      </div>
     </section>
   );
 }

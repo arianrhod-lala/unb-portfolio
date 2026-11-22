@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { findMember, team } from "../data/team";
 import Socials from "../components/Socials";
+import PersonalWebsite from "../components/PersonalWebsite";
 
 export default function Profile() {
   const { id } = useParams<{ id: string }>();
@@ -23,17 +24,18 @@ export default function Profile() {
       <div className="profile-head">
         <img className="member-photo profile-photo" src={member.photo} alt={member.name} style={{ borderColor: member.accent }} />
         <div>
-          <h1 className="display">{member.name.toUpperCase()}</h1>
+          <h1 className="display">{member.name}</h1>
           <h2 className="handle">{member.handle}</h2>
           <p className="tagline">{member.tagline}</p>
           <Socials links={member.socials} />
+          <PersonalWebsite url={member.website} name={member.name} />
         </div>
       </div>
 
       <div className="profile-body">
         <div>
           <h3>About</h3>
-          <p>{member.bio}</p>
+          <p>{/^lorem ipsum/i.test(member.bio) ? 'This member has not added a biography yet. Explore their listed interests below.' : member.bio}</p>
           <h3>Skills</h3>
           <ul className="chips">{member.skills.map((s) => <li key={s}>{s}</li>)}</ul>
         </div>

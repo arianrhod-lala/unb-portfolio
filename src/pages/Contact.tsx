@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { FacebookIcon, InstagramIcon, GithubIcon } from "../components/Icons";
+import { scrollBehavior } from "../utils/motion";
 
 const EMAIL = "unitednationboys@gmail.com";
 const PHONE = "+63 999 473 7196";
@@ -27,12 +28,12 @@ export default function Contact() {
         {/* Left Information Column */}
         <div className="contact-title-col">
           <h2 className="display contact-display-title">
-            GET IN<br />TOUCH
+            Get in touch
           </h2>
 
           <div className="station-badge">
             <span className="station-dot" />
-            <span className="station-text">COMMUTER INQUIRIES & COLLABORATIONS</span>
+            <span className="station-text">Start a conversation</span>
           </div>
 
           <p className="contact-sub">
@@ -90,8 +91,8 @@ export default function Contact() {
         <div className="contact-form-col">
           <form className="contact-form" onSubmit={onSubmit}>
             <div className="form-legend">
-              <h3>Drop Us a Dispatch</h3>
-              <p>We typically respond within 24 hours.</p>
+              <h3>Send a message</h3>
+              <p>This form opens your email app. You’ll send the message from there.</p>
             </div>
 
             <div className="form-row">
@@ -127,7 +128,7 @@ export default function Contact() {
 
             {sent && (
               <div className="sent-toast" role="status">
-                ✓ Your email app is opening with your message ready to dispatch!
+                Your email app was requested. Review and send your message there; it has not been sent by this form.
               </div>
             )}
           </form>
@@ -137,7 +138,7 @@ export default function Contact() {
       <div className="site-bottom-bar">
         <span>© {new Date().getFullYear()} UNB (United Nation Boys) • TUP-Manila</span>
         <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onClick={() => window.scrollTo({ top: 0, behavior: scrollBehavior() })}
           className="back-to-top"
           aria-label="Back to top of page"
         >

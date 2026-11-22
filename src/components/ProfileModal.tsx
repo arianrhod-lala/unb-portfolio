@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useRef, type KeyboardEvent } from "react";
 import { findMember, team } from "../data/team";
 import Socials from "./Socials";
+import PersonalWebsite from "./PersonalWebsite";
 
 interface ProfileModalProps {
   memberId: string | null;
@@ -8,33 +9,71 @@ interface ProfileModalProps {
   onSelectMember: (id: string) => void;
 }
 
+function keepFocusInDialog(event: KeyboardEvent<HTMLDialogElement>) {
+  if (event.key !== 'Tab') return;
+  const controls = event.currentTarget.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input, textarea, [tabindex="0"]');
+  const first = controls[0];
+  const last = controls[controls.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last?.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first?.focus();
+  }
+}
+
 export default function ProfileModal({ memberId, onClose, onSelectMember }: ProfileModalProps) {
   const member = findMember(memberId ?? undefined);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const previousMemberId = useRef(memberId);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    if (member) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", onKey);
-    }
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const overflow = document.body.style.overflow;
+    dialog.showModal();
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKey);
+      dialog.close();
+      document.body.style.overflow = overflow;
+      if (trigger?.isConnected) trigger.focus({ preventScroll: true });
     };
-  }, [member, onClose]);
+  }, []);
 
-  if (!member) return null;
+  useEffect(() => {
+    if (previousMemberId.current !== memberId) {
+      titleRef.current?.focus({ preventScroll: true });
+      previousMemberId.current = memberId;
+    }
+    dialogRef.current?.scrollTo({ top: 0 });
+  }, [memberId]);
+
+  if (!member) return (
+    <dialog ref={dialogRef} className="modal-content" aria-labelledby="missing-title" onKeyDown={keepFocusInDialog}
+      onCancel={event => { event.preventDefault(); onClose(); }}>
+      <h2 id="missing-title">Member not found</h2>
+      <p>This member is not part of the current UNB network.</p>
+      <button className="pill" autoFocus onClick={onClose}>Return to team</button>
+    </dialog>
+  );
 
   const currentIndex = team.findIndex((m) => m.id === member.id);
   const prevMember = team[(currentIndex - 1 + team.length) % team.length];
   const nextMember = team[(currentIndex + 1) % team.length];
 
   return (
-    <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-label={`${member.name}'s Profile`}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose} aria-label="Close profile">
+    <dialog ref={dialogRef} className="modal-content" aria-label={`${member.name}'s Profile`}
+      onKeyDown={keepFocusInDialog}
+      onCancel={event => { event.preventDefault(); onClose(); }}
+      onClick={event => {
+        if (event.target !== event.currentTarget) return;
+        const box = event.currentTarget.getBoundingClientRect();
+        if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) onClose();
+      }}>
+        <button className="modal-close" autoFocus onClick={onClose} aria-label="Close profile">
           ✕
         </button>
 
@@ -46,17 +85,18 @@ export default function ProfileModal({ memberId, onClose, onSelectMember }: Prof
             style={{ borderColor: member.accent }}
           />
           <div className="profile-info">
-            <h1 className="display modal-title">{member.name.toUpperCase()}</h1>
+            <h2 ref={titleRef} tabIndex={-1} className="display modal-title">{member.name}</h2>
             <h2 className="handle">{member.handle}</h2>
             <p className="tagline">{member.tagline}</p>
             <Socials links={member.socials} />
+            <PersonalWebsite url={member.website} name={member.name} />
           </div>
         </div>
 
         <div className="profile-body">
           <div>
             <h3>About</h3>
-            <p>{member.bio}</p>
+            <p>{/^lorem ipsum/i.test(member.bio) ? 'This member has not added a biography yet. Explore their listed interests below.' : member.bio}</p>
             <h3>Skills & Technologies</h3>
             <ul className="chips">
               {member.skills.map((s) => (
@@ -82,13 +122,12 @@ export default function ProfileModal({ memberId, onClose, onSelectMember }: Prof
             ← {prevMember.name}
           </button>
           <button className="pill pill--primary" onClick={onClose}>
-            Back to Team Track
+            Back to network
           </button>
           <button className="pill pill--outline" onClick={() => onSelectMember(nextMember.id)}>
             {nextMember.name} →
           </button>
         </div>
-      </div>
-    </div>
+    </dialog>
   );
 }
