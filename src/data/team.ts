@@ -97,13 +97,13 @@ export const team: Member[] = [
     photo: "/images/tristan.jpg?v=4",
     website: "https://tristan1804.github.io/Personal-Portfolio/",
     accent: "#6b0f2a",
-    tagline: "Backend Engineer & Cloud Architect",
-    bio: "Lorem ipsum dolor sit amet consectetur adipiscing elit excepteur eiusmod quas mollit ut ex nulla ut ullamco sunt sint at cum placeat excepturi corrupti sit adipiscing soluta ullamco et dolores praesentium",
-    skills: ["Cloud Services", "Docker", "DevOps", "Python", "System Security"],
+    tagline: "Full-Stack Developer & Database Management",
+    bio: "I'm Tristan Jhon Capuyan, a BSIT student at TUP - Manila. I build web projects and turn ideas into clean, usable designs. This portfolio shows my work and how I have grown from beginner to builder.",
+    skills: ["Full-stack", "Networking", "DevOps", "Python", "Databases"],
     projects: [
-      { title: "Cloud Deployment Pipeline", description: "Automated CI/CD pipeline and container registry for team microservices." },
-      { title: "Auth & Identity Gateway", description: "OAuth2 and session token management service for shared student tools." },
-      { title: "Monitoring Dashboard", description: "Prometheus and Grafana cluster monitor with uptime alerting." }
+      { title: "Yankicks", description: "YanKicks is a fully functional, full-stack e-commerce platform designed for selling premium athletic footwear." },
+      { title: "Outpatient No-Show Predictor", description: "A data-driven dashboard designed to visualize patient attendance trends and estimate the risk of future appointment no-shows. Built with Python and Streamlit." },
+      { title: "SimbAI", description: "SimbAI is a high-fidelity Flutter prototype for a bilingual navigation application designed to help Filipino commuters find routes to Catholic parish churches in Laguna, Philippines using public transportation" }
     ],
     socials
   },
