@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { team } from "../data/team";
+import StationAnnouncement from "./StationAnnouncement";
 
 interface NavbarProps {
   activeSection: string;
@@ -50,6 +51,7 @@ export default function Navbar({ activeSection, variant, onNavigate, onSelectMem
         <span className="brand-text">UNB</span>
       </button>
 
+      <StationAnnouncement activeSection={activeSection} />
       <nav aria-label="Main Navigation">
         <button
           className={navClass("home")} aria-current={activeSection === "home" ? "location" : undefined}

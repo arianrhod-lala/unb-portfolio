@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { scrollBehavior } from "../utils/motion";
+import StationHeading from "../components/StationHeading";
 
 export default function About() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -23,14 +24,8 @@ export default function About() {
         {/* Section Header (Split Layout: Title + Subtitle + Badge on Left, Description on Right) */}
         <div className="about-header split">
           <div className="about-title-col">
-            <h2 className="display about-display-title">
-              About us
-            </h2>
+            <StationHeading number="02" name="The collective" title="About us" />
             <p className="about-subtitle">One connection. Different perspectives.</p>
-            <div className="station-badge">
-              <span className="station-dot" />
-              <span className="station-text">LRT-1 · UN Avenue</span>
-            </div>
           </div>
 
           <div className="about-desc-col">

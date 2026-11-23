@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { FacebookIcon, InstagramIcon, GithubIcon } from "../components/Icons";
 import { scrollBehavior } from "../utils/motion";
+import StationSign from "../components/StationSign";
 
 const EMAIL = "unitednationboys@gmail.com";
 const PHONE = "+63 999 473 7196";
@@ -31,10 +32,7 @@ export default function Contact() {
             Get in touch
           </h2>
 
-          <div className="station-badge">
-            <span className="station-dot" />
-            <span className="station-text">Start a conversation</span>
-          </div>
+          <StationSign number="04" name="Final stop · Let’s connect" />
 
           <p className="contact-sub">
             Have an exciting project, freelance inquiry, or just want to connect with

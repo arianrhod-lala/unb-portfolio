@@ -1,5 +1,7 @@
 ﻿import TransitNetwork from '../components/TransitNetwork';
 
+import StationSign from '../components/StationSign';
+
 interface HomeProps {
   onNavigate: (section: string) => void;
   onSelectMember: (id: string) => void;
@@ -10,7 +12,7 @@ export default function Home({ onNavigate, onSelectMember }: HomeProps) {
     <section id="home" className="home" aria-labelledby="home-title">
       <div className="home-content-wrap">
         <div className="home-text-block">
-          <p className="home-location"><span className="station-marker" aria-hidden="true" />TUP-Manila · IT student collective</p>
+          <div className="home-location"><StationSign number="01" name="UN Avenue" night /><span>TUP-Manila · IT student collective</span></div>
           <h1 id="home-title" className="home-title">Different routes.<br />Shared direction.</h1>
           <p className="home-desc">We’re UNB. A collective exploring software, systems, and digital design. Connected by the commute. Building on what we learn.</p>
           <div className="home-actions">

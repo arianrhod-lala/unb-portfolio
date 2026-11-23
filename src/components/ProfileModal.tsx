@@ -2,6 +2,7 @@ import { useEffect, useRef, type KeyboardEvent } from "react";
 import { findMember, team } from "../data/team";
 import Socials from "./Socials";
 import PersonalWebsite from "./PersonalWebsite";
+import MemberPassBanner from "./MemberPassBanner";
 
 interface ProfileModalProps {
   memberId: string | null;
@@ -65,7 +66,7 @@ export default function ProfileModal({ memberId, onClose, onSelectMember }: Prof
   const nextMember = team[(currentIndex + 1) % team.length];
 
   return (
-    <dialog ref={dialogRef} className="modal-content" aria-label={`${member.name}'s Profile`}
+    <dialog ref={dialogRef} className="modal-content profile-pass" aria-label={`${member.name}'s Profile`}
       onKeyDown={keepFocusInDialog}
       onCancel={event => { event.preventDefault(); onClose(); }}
       onClick={event => {
@@ -77,6 +78,7 @@ export default function ProfileModal({ memberId, onClose, onSelectMember }: Prof
           ✕
         </button>
 
+        <MemberPassBanner number={currentIndex + 1} total={team.length} />
         <div className="profile-head">
           <img
             className="member-photo profile-photo"
