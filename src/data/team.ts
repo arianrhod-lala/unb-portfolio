@@ -105,7 +105,11 @@ export const team: Member[] = [
       { title: "Outpatient No-Show Predictor", description: "A data-driven dashboard designed to visualize patient attendance trends and estimate the risk of future appointment no-shows. Built with Python and Streamlit." },
       { title: "SimbAI", description: "SimbAI is a high-fidelity Flutter prototype for a bilingual navigation application designed to help Filipino commuters find routes to Catholic parish churches in Laguna, Philippines using public transportation" }
     ],
-    socials
+    socials: {
+      facebook: "https://www.facebook.com/teej.jhon",
+      instagram: "https://instagram.com/te._.ej",
+      github: "https://github.com/tristan1804"
+    }
   },
 ];
 
