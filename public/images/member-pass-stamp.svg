@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <g transform="rotate(-14 100 100)" stroke="#376749" opacity=".13">
+    <circle cx="100" cy="100" r="83" stroke-width="3" stroke-dasharray="63 2 19 3 81 2 34 3"/>
+    <circle cx="100" cy="100" r="74" stroke-width="1.5"/>
+    <path d="M33 77h134M33 123h134" stroke-width="2" stroke-dasharray="30 2 60 3"/>
+    <g fill="#376749" stroke="none" font-family="Arial, sans-serif" text-anchor="middle">
+      <text x="100" y="64" font-size="13" letter-spacing="2">MEMBER PASS</text>
+      <text x="100" y="113" font-size="37" font-weight="700" letter-spacing="3">UNB</text>
+      <text x="100" y="145" font-size="12" letter-spacing="2">OUR TEAM</text>
+      <text x="100" y="163" font-size="9" letter-spacing="1">MANILA</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" fill="none">
+  <g transform="rotate(9 100 60)" stroke="#773d43" opacity=".12">
+    <rect x="14" y="23" width="172" height="74" rx="3" stroke-width="3" stroke-dasharray="48 2 28 3 71 2"/>
+    <rect x="20" y="29" width="160" height="62" rx="1" stroke-width="1"/>
+    <path d="M22 65h156" stroke-width="1.5" stroke-dasharray="27 2 59 3"/>
+    <g fill="#773d43" stroke="none" font-family="Arial, sans-serif" text-anchor="middle">
+      <text x="100" y="55" font-size="18" font-weight="700" letter-spacing="1">UN AVENUE</text>
+      <text x="100" y="82" font-size="12" letter-spacing="3">UNB LINE</text>
+    </g>
+  </g>
+</svg>
