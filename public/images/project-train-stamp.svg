@@ -6,9 +6,5 @@
     <rect x="40" y="32" width="40" height="48" rx="10" stroke-width="2.5"/>
     <rect x="46" y="38" width="28" height="18" rx="3" stroke-width="2"/>
     <path d="M60 38v18M47 70h5m16 0h5M53 63h14M49 32l6-6h10l6 6" stroke-width="2"/>
-    <g fill="#376749" stroke="none" font-family="Arial, sans-serif" text-anchor="middle" font-weight="700">
-      <text x="60" y="22" font-size="7" letter-spacing="1">UNB LINE</text>
-      <text x="60" y="102" font-size="6" letter-spacing=".8">SHARED ROUTE</text>
-    </g>
   </g>
 </svg>
