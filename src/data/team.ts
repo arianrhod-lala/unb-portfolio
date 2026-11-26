@@ -29,15 +29,19 @@ export const team: Member[] = [
     photo: "/images/kobe.jpg?v=4",
     website: "https://business-portfolio-kobecuison-omega.vercel.app/",
     accent: "#302d2b",
-    tagline: "Frontend Architect & Creative Designer",
+    tagline: "Aspiring Software Engineer",
     bio: "DOST Scholar and BSIT student who turns challenges into growth. I thrive on learning, adapt quickly, and commit fully to what I start. Focused, curious, and ready to take on opportunities that push me beyond my comfort zone.",
-    skills: ["TypeScript", "React", "UI/UX Design", "Vite", "Tailwind CSS"],
+    skills: ["Python", "SQL", "Flutter", "TypeScript", "React", "UI/UX Design", "Vite", "Tailwind CSS"],
     projects: [
-      { title: "UNB Collective Portal", description: "Modern portfolio experience with railway track navigation and interactive profile drawers." },
-      { title: "LRT-1 Station Tracker", description: "Real-time commuter navigation helper for daily University Belt students." },
-      { title: "Campus Network Hub", description: "Community forum and resource sharing space for TUP students." }
+      { title: "YanKicks", description: "A full-featured e-commerce platform for sneakers and streetwear, featuring dynamic product catalogs, user authentication, cart management, and database integration." },
+      { title: "SimbAI", description: "A cross-platform mobile app for exploring churches, planning Visita Iglesia routes, and accessing parish schedules, with navigation and community features." },
+      { title: "AWS Hugo Website", description: "The official AWS Cloud Club – Hugo website, showcasing events, resources, and member initiatives through dynamic content and backend integration." }
     ],
-    socials
+      socials: {
+      facebook: "https://www.facebook.com/Yukkurishinu",
+      instagram: "https://www.instagram.com/swilylent/",
+      github: "https://github.com/SushiShyDoll"
+    },
   },
   {
     id: "ian",
