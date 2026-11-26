@@ -78,6 +78,7 @@ export const team: Member[] = [
     name: "Allen",
     handle: "@mygabxx_",
     photo: "/images/allen.jpg?v=4",
+    website: "https://allenpasion05-droid.github.io/Portfolio_v1/",
     accent: "#6b0f2a",
     tagline: "Data Analyst, Full-stack Developer & AI Engineer",
     bio: "A highly motivated and detail-oriented IT student with a strong foundation in software development, mobile application programming, and emerging technologies. Passionate about creating seamless, user-centric digital solutions and continuously expanding technical expertise through hands-on projects and innovative problem-solving.",
