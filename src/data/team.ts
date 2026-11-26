@@ -29,15 +29,19 @@ export const team: Member[] = [
     photo: "/images/kobe.jpg?v=4",
     website: "https://business-portfolio-kobecuison-omega.vercel.app/",
     accent: "#302d2b",
-    tagline: "Frontend Architect & Creative Designer",
+    tagline: "Aspiring Software Engineer",
     bio: "DOST Scholar and BSIT student who turns challenges into growth. I thrive on learning, adapt quickly, and commit fully to what I start. Focused, curious, and ready to take on opportunities that push me beyond my comfort zone.",
-    skills: ["TypeScript", "React", "UI/UX Design", "Vite", "Tailwind CSS"],
+    skills: ["Python", "SQL", "Flutter", "TypeScript", "React", "UI/UX Design", "Vite", "Tailwind CSS"],
     projects: [
-      { title: "UNB Collective Portal", description: "Modern portfolio experience with railway track navigation and interactive profile drawers." },
-      { title: "LRT-1 Station Tracker", description: "Real-time commuter navigation helper for daily University Belt students." },
-      { title: "Campus Network Hub", description: "Community forum and resource sharing space for TUP students." }
+      { title: "YanKicks", description: "A full-featured e-commerce platform for sneakers and streetwear, featuring dynamic product catalogs, user authentication, cart management, and database integration." },
+      { title: "SimbAI", description: "A cross-platform mobile app for exploring churches, planning Visita Iglesia routes, and accessing parish schedules, with navigation and community features." },
+      { title: "AWS Hugo Website", description: "The official AWS Cloud Club – Hugo website, showcasing events, resources, and member initiatives through dynamic content and backend integration." }
     ],
-    socials
+      socials: {
+      facebook: "https://www.facebook.com/Yukkurishinu",
+      instagram: "https://www.instagram.com/swilylent/",
+      github: "https://github.com/SushiShyDoll"
+    },
   },
   {
     id: "ian",
@@ -80,15 +84,19 @@ export const team: Member[] = [
     photo: "/images/allen.jpg?v=4",
     website: "https://allenpasion05-droid.github.io/Portfolio_v1/",
     accent: "#6b0f2a",
-    tagline: "Software Engineer & Mobile Specialist",
-    bio: "Lorem ipsum dolor sit amet consectetur adipiscing corrupti sit adipiscing soluta ullamco et dolores praesentium est voluptas assumenda sint imperdiet nihil qui dolor et expedita tempor omnis ut in aute eu cupiditate in nulla",
-    skills: ["Mobile Dev", "React Native", "Java / Kotlin", "Git", "Clean Architecture"],
+    tagline: "Data Analyst, Full-stack Developer & AI Engineer",
+    bio: "A highly motivated and detail-oriented IT student with a strong foundation in software development, mobile application programming, and emerging technologies. Passionate about creating seamless, user-centric digital solutions and continuously expanding technical expertise through hands-on projects and innovative problem-solving.",
+    skills: ["PostgreSQL", "Prompting", "Java / Kotlin", "Git&Github", "LLMs/ML"],
     projects: [
-      { title: "Commuter Pulse", description: "Cross-platform mobile utility for tracking train intervals and station crowds." },
-      { title: "TUP Grade Tracker", description: "Offline-first mobile calculator for curriculum subjects and GWA calculation." },
-      { title: "Event Scanner App", description: "QR code check-in scanner application for campus student organization summits." }
+      { title: "Google Books Search System", description: "Web app integrating the Google Books API to search, browse, and retrieve book information." },
+      { title: "Analyzing Student's Mental Health", description: "Data analysis project examining mental health trends among students using statistical methods and data visualization." },
+      { title: "Yankicks E-Commerce Web System", description: "Full-stack e-commerce platform for footwear retail with product listings, cart management, and order processing." }
     ],
-    socials
+    socials: {
+      facebook: "https://www.facebook.com/allengabrielle.pasion/",
+      instagram: "https://www.instagram.com/mygabxx_/",
+      github: "https://github.com/allenpasion05-droid"
+    },
   },
   {
     id: "tristan",
@@ -97,13 +105,13 @@ export const team: Member[] = [
     photo: "/images/tristan.jpg?v=4",
     website: "https://tristan1804.github.io/Personal-Portfolio/",
     accent: "#6b0f2a",
-    tagline: "Backend Engineer & Cloud Architect",
-    bio: "Lorem ipsum dolor sit amet consectetur adipiscing elit excepteur eiusmod quas mollit ut ex nulla ut ullamco sunt sint at cum placeat excepturi corrupti sit adipiscing soluta ullamco et dolores praesentium",
-    skills: ["Cloud Services", "Docker", "DevOps", "Python", "System Security"],
+    tagline: "Full-Stack Developer & Database Management",
+    bio: "I'm Tristan Jhon Capuyan, a BSIT student at TUP - Manila. I build web projects and turn ideas into clean, usable designs. This portfolio shows my work and how I have grown from beginner to builder.",
+    skills: ["Full-stack", "Networking", "DevOps", "Python", "Databases"],
     projects: [
-      { title: "Cloud Deployment Pipeline", description: "Automated CI/CD pipeline and container registry for team microservices." },
-      { title: "Auth & Identity Gateway", description: "OAuth2 and session token management service for shared student tools." },
-      { title: "Monitoring Dashboard", description: "Prometheus and Grafana cluster monitor with uptime alerting." }
+      { title: "Yankicks", description: "YanKicks is a fully functional, full-stack e-commerce platform designed for selling premium athletic footwear." },
+      { title: "Outpatient No-Show Predictor", description: "A data-driven dashboard designed to visualize patient attendance trends and estimate the risk of future appointment no-shows. Built with Python and Streamlit." },
+      { title: "SimbAI", description: "SimbAI is a high-fidelity Flutter prototype for a bilingual navigation application designed to help Filipino commuters find routes to Catholic parish churches in Laguna, Philippines using public transportation" }
     ],
     socials
   },
