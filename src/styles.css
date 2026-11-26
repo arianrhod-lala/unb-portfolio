@@ -240,14 +240,21 @@ button svg { flex: none; }
 .handle { font: 400 16px var(--font-title); margin: 8px 0 12px; color: var(--secondary); }
 .tagline { font-size: 13px; color: var(--secondary); margin: 0 0 12px; }
 .personal-website { margin-top: 16px; font-size: 13px; }
-.member-pass-banner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 0 40px 20px 0; margin-bottom: 28px; border-bottom: 1px dashed var(--line); }
+.member-pass-banner { position: relative; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 0 40px 20px 0; margin-bottom: 28px; border-bottom: 1px dashed var(--line); }
 .member-pass-banner__route { display: grid; gap: 4px; color: var(--secondary); font: 400 11px/1.5 var(--font-nav); }
-.profile-pass .profile-photo { border-inline-start: 3px solid oklch(0.46 0.09 155) !important; border-radius: 8px; }
+.profile-pass, .profile-pass-sheet { background-image: url('/images/member-pass-stamp.svg'), url('/images/un-avenue-stamp.svg'); background-repeat: no-repeat; background-position: right 24px top 142px, left 24px bottom 72px; background-size: 184px 184px, 172px 104px; }
+.modal-content.profile-pass { padding: 0; border: 0; background: transparent; }
+.profile-pass-sheet { position: relative; padding: 48px; border: 1px solid var(--line); border-radius: 16px; background-color: var(--paper); }
+.profile-pass .profile-photo { border-radius: 8px; }
 .profile-pass .personal-website { max-width: 100%; }
 .profile-pass .chips li { display: flex; align-items: center; gap: 8px; }
 .profile-pass .chips li::before { content: ''; width: 6px; height: 6px; border: 1px solid oklch(0.46 0.09 155); border-radius: 50%; flex: none; }
-.profile-pass .projects li { position: relative; padding: 16px 16px 0 32px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); margin-bottom: 16px; }
-.profile-pass .projects li::before { content: ''; position: absolute; top: 12px; bottom: 12px; left: 12px; border-left: 1px dashed rgb(72 130 92 / 0.35); }
+.profile-pass .projects { counter-reset: project-ticket; }
+.profile-pass .projects li { counter-increment: project-ticket; position: relative; padding: 96px 18px 0; border: 1px solid var(--line); border-radius: 8px; background-color: var(--surface); background-image: url('/images/project-train-stamp.svg'); background-repeat: no-repeat; background-size: 82px 82px; background-position: left 12px top 8px; margin-bottom: 18px; mask-image: radial-gradient(circle at calc(100% - 48px) 56px, transparent 5px, black 6px), radial-gradient(circle at calc(100% - 26px) 56px, transparent 5px, black 6px); mask-composite: intersect; }
+.profile-pass .projects li:nth-child(3n + 2) { background-image: url('/images/project-junction-stamp.svg'); }
+.profile-pass .projects li:nth-child(3n) { background-image: url('/images/project-platform-stamp.svg'); }
+.profile-pass .projects li::before { content: ''; position: absolute; top: 56px; left: 110px; right: 68px; border-top: 1px dashed var(--line); pointer-events: none; }
+.profile-pass .projects li::after { content: 'PROJECT ' counter(project-ticket, decimal-leading-zero); position: absolute; top: 22px; right: 18px; font: 400 10px/1.4 var(--font-nav); color: var(--secondary); pointer-events: none; }
 .profile-body { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; border-top: 1px solid var(--line); padding-top: 32px; }
 .profile-body h3 { font: 500 18px var(--font-title); margin: 0 0 16px; }
 .profile-body p { font-size: 14px; color: var(--secondary); margin: 0 0 24px; overflow-wrap: anywhere; }
@@ -321,6 +328,8 @@ button svg { flex: none; }
   .contact-form { padding: 24px; }
   .profile-body { grid-template-columns: 1fr; gap: 24px; }
   .modal-content { padding: 48px 24px 24px; }
+  .profile-pass-sheet { padding: 48px 24px 24px; }
+  .profile-pass-sheet .modal-close { top: 8px; }
   .profile-head { gap: 24px; }
   .profile-photo { width: 112px; height: 112px; }
   .profile-modal-footer .pill { font-size: 12px; padding: 12px; }

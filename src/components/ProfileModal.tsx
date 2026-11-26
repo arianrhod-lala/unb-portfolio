@@ -74,6 +74,7 @@ export default function ProfileModal({ memberId, onClose, onSelectMember }: Prof
         const box = event.currentTarget.getBoundingClientRect();
         if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) onClose();
       }}>
+      <div className="profile-pass-sheet">
         <button className="modal-close" autoFocus onClick={onClose} aria-label="Close profile">
           ✕
         </button>
@@ -130,6 +131,7 @@ export default function ProfileModal({ memberId, onClose, onSelectMember }: Prof
             {nextMember.name} →
           </button>
         </div>
+      </div>
     </dialog>
   );
 }

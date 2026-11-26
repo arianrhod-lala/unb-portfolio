@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <g transform="rotate(5 60 60)" stroke="#496779" stroke-linecap="round" stroke-linejoin="round" opacity=".76">
+    <path d="M32 11h56l25 49-25 49H32L7 60z" stroke-width="2.5" stroke-dasharray="49 1.5 31 2 62 1.5"/>
+    <path d="M35 17h50l21 43-21 43H35L14 60z" stroke-width="1"/>
+    <path d="M54 82V64L36 46m30 36V64l18-18M60 82V42" stroke-width="2.5"/>
+    <circle cx="34" cy="43" r="5" stroke-width="2"/><circle cx="60" cy="37" r="5" stroke-width="2"/><circle cx="86" cy="43" r="5" stroke-width="2"/>
+    <path d="M50 74h20M50 80h20M44 56l8-6m18 0 8 6" stroke-width="1.5"/>
+    <g fill="#496779" stroke="none" font-family="Arial, sans-serif" text-anchor="middle" font-weight="700">
+      <text x="60" y="28" font-size="7" letter-spacing="1">UNB</text>
+      <text x="60" y="96" font-size="6" letter-spacing=".8">CONNECTIONS</text>
+    </g>
+  </g>
+</svg>

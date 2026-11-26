@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <g transform="rotate(-5 60 60)" stroke="#773d43" stroke-linecap="round" stroke-linejoin="round" opacity=".76">
+    <path d="M37 9h46l28 28v46l-28 28H37L9 83V37z" stroke-width="2.5" stroke-dasharray="53 1.5 29 2 70 1.5"/>
+    <path d="M39 15h42l24 24v42l-24 24H39L15 81V39z" stroke-width="1"/>
+    <path d="M28 78h64M30 74h60M33 72V46h54v26M27 45l33-12 33 12zM43 50v20m17-20v20m17-20v20" stroke-width="2"/>
+    <rect x="49" y="52" width="22" height="11" rx="1" stroke-width="1.5"/>
+    <path d="M53 57h14" stroke-width="1.5"/>
+    <g fill="#773d43" stroke="none" font-family="Arial, sans-serif" text-anchor="middle" font-weight="700">
+      <text x="60" y="29" font-size="7" letter-spacing="1">UN AVENUE</text>
+      <text x="60" y="93" font-size="6.5" letter-spacing="1">NEXT STOP</text>
+    </g>
+  </g>
+</svg>

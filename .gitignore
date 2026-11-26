@@ -13,3 +13,6 @@ scripts
 .DS_Store
 Thumbs.db
 docs/screenshots/*.png
+# Session documentation stays local
+*.[mM][dD]
+*.[mM][aA][rR][kK][dD][oO][wW][nN]
