@@ -43,16 +43,16 @@ export const team: Member[] = [
     id: "ian",
     name: "Ian",
     handle: "@iansane222",
-    photo: "/images/ian.jpg?v=4",
+    photo: "/images/ian.jpg?v=5",
     website: "https://ianlester.netlify.app",
     accent: "#6b0f2a",
     tagline: "Visual Artist & Creative Technologist",
-    bio: "lorem ipsum dolor sit amet consectetur adipiscing elit excepteur eiusmod quas mollit ut ex nulla ut ullamco sunt sint at cum placeat excepturi corrupti sit adipiscing lorem ipsum dolor sit amet consectetur",
+    bio: "DOST Scholar. Builds for fun. Likes minimal and hassle-free brandings. Hope to be happy by the end of it.",
     skills: ["Photography", "Creative Direction", "Motion Graphics", "Branding"],
     projects: [
-      { title: "Manila Bay Golden Hour", description: "Documentary photography series capturing youth culture across Metro Manila." },
-      { title: "UNB Identity Package", description: "Typography system, brand guidelines, and vintage railway iconography." },
-      { title: "Soundtrack of Commute", description: "Curated ambient soundscape and playlist for the LRT line." }
+      { title: "Cozy Shack", description: "Small peek into a room of personal belongings and stories." },
+      { title: "Hugo AI Chatbot", description: "RAG-powered chatbot for the AWS Student Builder Group (AWSCC) website." },
+      { title: "Google Search Ranking CTR Lane", description: "End-to-end search intelligence ML pipeline using Random Forest regression to predict expected CTR." }
     ],
     socials
   },

@@ -37,7 +37,7 @@ export default function Profile() {
       <div className="profile-body">
         <div>
           <h3>About</h3>
-          <p>{/^lorem ipsum/i.test(member.bio) ? 'This member has not added a biography yet. Explore their listed interests below.' : member.bio}</p>
+            <p>{/^lorem ipsum/i.test(member.bio) ? 'This member has not added a biography yet. Explore their listed interests below.' : member.bio}</p>
           <h3>Skills</h3>
           <ul className="chips">{member.skills.map((s) => <li key={s}>{s}</li>)}</ul>
         </div>
