@@ -17,6 +17,34 @@ const fs = require('node:fs');
     }, y);
     await settle();
   };
+  const waitForTravel = () => page.waitForFunction(() => document.querySelector('.journey-track').dataset.phase === 'travel', undefined, { timeout: 3500 });
+  const inspectDwell = async (id, width) => {
+    await page.waitForFunction(id => {
+      const track = document.querySelector('.journey-track');
+      return track.dataset.phase === 'dwelling' && track.dataset.dwellStop === id;
+    }, id, { timeout: 1500 });
+    const parked = await page.locator('.journey-train').evaluate(train => train.style.transform);
+    const cars = await page.locator('[data-car]').evaluateAll(cars => cars.map(car => car.getAttribute('transform')));
+    const actors = page.locator(`[data-commuter="${id}"]`);
+    await page.waitForFunction(id => [...document.querySelectorAll(`[data-commuter="${id}"]`)].every(person => Number(person.style.opacity) > 0.1), id, { timeout: 1500 });
+    const peopleBefore = await actors.evaluateAll(people => people.map(person => person.style.transform));
+    await page.waitForTimeout(160);
+    assert.equal(await page.locator('.journey-train').evaluate(train => train.style.transform), parked, 'Train must remain stationary while passengers walk without further scrolling');
+    assert.deepEqual(await page.locator('[data-car]').evaluateAll(cars => cars.map(car => car.getAttribute('transform'))), cars, 'Every car must hold its position and angle during the stop');
+    assert.notDeepEqual(await actors.evaluateAll(people => people.map(person => person.style.transform)), peopleBefore, 'People must keep walking when scrolling stops');
+    assert(await actors.evaluateAll(people => people.every(person => {
+      const box = person.getBoundingClientRect();
+      return box.left >= 0 && box.right <= innerWidth && box.width >= (innerWidth > 1100 ? 23.99 : 11.99);
+    })), `${width}/${id}: stopped commuters must stay on screen`);
+    if (id === 'about' && [1440, 320].includes(width)) await page.screenshot({ path: `docs/screenshots/station-dwell-${width}.png` });
+    const dock = await page.locator('.journey-train').evaluate(train => new DOMMatrixReadOnly(getComputedStyle(train).transform).m42);
+    await scrollTrain(dock + 100);
+    assert.equal(await page.locator('.journey-train').evaluate(train => train.style.transform), parked, 'Page scroll must remain free while the train dwells');
+    await waitForTravel();
+    const departed = await page.locator('.journey-train').evaluate(train => new DOMMatrixReadOnly(getComputedStyle(train).transform).m42);
+    assert(Math.abs(departed - dock - 100) < 2, 'Train resumes towards current scroll position after boarding finishes');
+    assert.equal(await actors.evaluateAll(people => people.filter(person => Number(person.style.opacity) > 0).length), 0, 'All commuters clear the doors before departure');
+  };
   fs.mkdirSync('docs/screenshots', { recursive: true });
   try {
     const signatures = new Map();
@@ -68,9 +96,18 @@ const fs = require('node:fs');
           offsets: [...document.querySelectorAll('[data-car]')].map(car => new DOMPoint(22, 36).matrixTransform(car.getScreenCTM()).y - origin),
           stops: [...document.querySelectorAll('.journey-station')].map(stop => ({ id: stop.dataset.stop, top: parseFloat(stop.style.top) + track.clientWidth / 2 })) };
       });
+      await inspectDwell('home', width);
+      for (const stop of geometry.stops.slice(1)) {
+        const dock = Math.max(0, Math.min(geometry.travel, stop.top - geometry.offsets[1]));
+        await scrollTrain(dock - 40);
+        await waitForTravel();
+        await scrollTrain(dock + 12);
+        await inspectDwell(stop.id, width);
+      }
       if (width > 1100) {
         const entry = geometry.stops[1].top - 22 - 180 - geometry.offsets[1];
         await scrollTrain(entry);
+        await waitForTravel();
         const angles = await page.locator('[data-car]').evaluateAll(cars => cars.map(car => {
           const matrix = car.transform.baseVal.consolidate().matrix;
           return Math.atan2(matrix.b, matrix.a) * 180 / Math.PI;
@@ -105,25 +142,8 @@ const fs = require('node:fs');
           });
         }), `Cars/couplings must follow the track at ${width}/${step}`);
       }
-      for (const stop of geometry.stops) {
-        for (const [car, offset] of geometry.offsets.entries()) {
-          const target = stop.id === 'home' ? 42 : Math.max(0, stop.top - offset + 12);
-          await scrollTrain(target);
-          const actors = page.locator(`[data-commuter="${stop.id}"][data-car-door="${car}"]`);
-          assert.equal(await actors.evaluateAll(people => people.filter(person => Number(getComputedStyle(person).opacity) > 0.1).length), 2, `${width}/${stop.id}/${car}: both side doors need visible people`);
-          assert.deepEqual(await actors.evaluateAll(people => people.map(person => Number(person.dataset.side)).sort()), [-1, 1]);
-          assert(await actors.evaluateAll(people => people.every(person => {
-            const box = person.getBoundingClientRect();
-            return box.left >= 0 && box.right <= innerWidth && box.width >= (innerWidth > 1100 ? 23.99 : 11.99);
-          })), `${width}/${stop.id}/${car}: visible commuters must stay on screen`);
-          if (car === 1 && stop.id === 'about' && [1440, 320].includes(width)) await page.screenshot({ path: `docs/screenshots/revised-commuters-${width}.png` });
-          const snapshot = await actors.evaluateAll(people => people.map(person => [person.style.transform, person.style.opacity]));
-          await scrollTrain(target + 200);
-          await scrollTrain(target);
-          assert.deepEqual(await actors.evaluateAll(people => people.map(person => [person.style.transform, person.style.opacity])), snapshot, 'Reverse scroll must restore commuter scene');
-        }
-      }
       await scrollTrain(geometry.travel);
+      await waitForTravel();
       assert.equal(await page.locator('[data-commuter]').evaluateAll(people => people.filter(person => Number(getComputedStyle(person).opacity) > 0).length), 0);
       assert(await page.locator('.journey-train').evaluate(element => {
         const box = element.getBoundingClientRect();
@@ -152,6 +172,6 @@ const fs = require('node:fs');
       await page.emulateMedia({ reducedMotion: 'no-preference' });
     }
     assert.deepEqual(errors, []);
-    console.log('PASS: seeded background stamps/containment for all profiles; three independent cars, rail and coupling geometry; visible commuters on both sides of every car at all stops; reverse/jump scroll, buffer, reduced motion at 1440/1101/1100/390/320px.');
+    console.log('PASS: timed station dwell, stationary cars while all six passengers walk without scrolling, free page scroll and departure after boarding; seeded backgrounds, articulated geometry, buffer, mobile/reduced motion at five widths.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

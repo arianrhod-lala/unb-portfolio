@@ -3,6 +3,7 @@ import TrainIllustration from './TrainIllustration';
 import RailPassenger from './RailPassenger';
 import { STATIONS } from '../data/stations';
 import { RAILWAY_TRIAL, STATION_SCENES, commuterPose, trainCarPoses, railPaths, trackOffset, type StationScene } from '../utils/journeyMotion';
+import { StationJourney, STATION_DWELL_MS } from '../utils/stationJourney';
 
 const stops = STATIONS.map(station => station.id);
 const commuters = stops.flatMap((stop, station) => [0, 1, 2].flatMap(car => [-1, 1].map((side, person) => ({
@@ -30,18 +31,28 @@ export default function PageRailway({ activeSection }: { activeSection: string }
     let disposed = false;
     let travel = 0;
     let measuredStops: Array<{ id: string; top: number }> = [];
+    const journey = new StationJourney();
+    let hasMeasured = false;
+    let resetJourney = false;
     const cars = [...train.querySelectorAll<SVGGElement>('[data-car]')];
     const couplings = [...train.querySelectorAll<SVGPathElement>('[data-coupling]')];
     const people = [...track.querySelectorAll<HTMLElement>('[data-commuter]')];
 
-    const update = () => {
+    const update = (now = performance.now()) => {
       frame = 0;
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       const progress = Math.max(0, Math.min(1, window.scrollY / maxScroll));
-      const y = motion.matches ? 0 : progress * travel;
       const width = track.clientWidth;
       const scale = train.clientWidth / 44;
       const compact = !desktop.matches;
+      const target = motion.matches ? 0 : progress * travel;
+      const docks = measuredStops.map(stop => ({ id: stop.id, y: stop.id === 'home' ? 0 : Math.max(0, Math.min(travel, stop.top + width / 2 - 118 * scale)) }));
+      if (resetJourney || motion.matches) journey.reset(target);
+      resetJourney = false;
+      const movement = journey.step(target, now, docks, Math.max(300, window.innerHeight * 0.45));
+      const y = movement.y;
+      track.dataset.phase = motion.matches ? 'parked' : movement.phase;
+      track.dataset.dwellStop = movement.stopId ?? '';
       const poses = trainCarPoses(y, scale, width, bendRef.current);
       const scene = bendRef.current.find(event => event.amplitude && poses.some(car => car.y > event.start && car.y < event.end));
       track.dataset.event = motion.matches ? 'parked' : scene?.id ?? 'travel';
@@ -67,26 +78,29 @@ export default function PageRailway({ activeSection }: { activeSection: string }
         const actor = commuters[index];
         const station = measuredStops.find(stop => stop.id === actor.stop);
         if (!station) return;
-        const stationY = station.top + width / 2;
-        const carOffset = (36 + actor.car * 82) * scale;
-        const start = actor.stop === 'home' ? 0 : Math.max(0, Math.min(travel - 156, stationY - carOffset - 48));
-        const phase = (y - start) / 132 - actor.person * 0.09;
-        const pose = commuterPose(phase, actor.kind, poses[actor.car], actor.stop === 'home' ? poses[actor.car].y : stationY, actor.side, scale, compact);
+        const boarding = actor.kind === 'board';
+        const elapsed = movement.dwellProgress * STATION_DWELL_MS;
+        const phase = (elapsed - (boarding ? 420 : 100) - actor.person * 90 - actor.car * 55) / (boarding ? 1050 : 850);
+        const pose = commuterPose(phase, actor.kind, poses[actor.car], poses[actor.car].y, actor.side, scale, compact);
         person.style.transform = `translate(${pose.x - (compact ? 6 : 12)}px, ${pose.y - (compact ? 10 : 17) + pose.bob}px)`;
-        person.style.opacity = motion.matches ? '0' : String(pose.opacity);
+        person.style.opacity = motion.matches || movement.phase !== 'dwelling' || movement.stopId !== actor.stop ? '0' : String(pose.opacity);
         person.style.setProperty('--stride', `${pose.stride}deg`);
       });
+      if (movement.needsFrame && !motion.matches && !disposed) frame = window.requestAnimationFrame(update);
     };
     const measure = () => {
       measureFrame = 0;
       if (disposed) return;
-      travel = Math.max(0, track.clientHeight - train.offsetHeight - 12);
+      const nextTravel = Math.max(0, track.clientHeight - train.offsetHeight - 12);
       const trackTop = track.getBoundingClientRect().top;
       const next = stops.flatMap(id => {
         const section = document.getElementById(id);
         return section ? [{ id, top: Math.max(0, section.getBoundingClientRect().top - trackTop + 48) }] : [];
       });
+      if (hasMeasured && (nextTravel !== travel || next.some((stop, index) => measuredStops[index]?.top !== stop.top))) resetJourney = true;
+      travel = nextTravel;
       measuredStops = next;
+      hasMeasured = true;
       const enabled = RAILWAY_TRIAL.enabled && desktop.matches && !motion.matches;
       bendRef.current = next.flatMap((stop, index) => {
         const config = STATION_SCENES.find(scene => scene.id === stop.id);
@@ -97,6 +111,7 @@ export default function PageRailway({ activeSection }: { activeSection: string }
       });
       setPaths(railPaths(track.clientHeight, bendRef.current));
       setStations(previous => previous.length === next.length && previous.every((stop, index) => stop.top === next[index].top) ? previous : next);
+      window.cancelAnimationFrame(frame);
       update();
     };
     const onScroll = () => {
@@ -105,21 +120,25 @@ export default function PageRailway({ activeSection }: { activeSection: string }
     const scheduleMeasure = () => {
       if (!disposed && !measureFrame) measureFrame = window.requestAnimationFrame(measure);
     };
+    const onResize = () => {
+      resetJourney = true;
+      scheduleMeasure();
+    };
     const observer = new ResizeObserver(scheduleMeasure);
     observer.observe(root);
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', scheduleMeasure);
-    motion.addEventListener('change', scheduleMeasure);
-    desktop.addEventListener('change', scheduleMeasure);
+    window.addEventListener('resize', onResize);
+    motion.addEventListener('change', onResize);
+    desktop.addEventListener('change', onResize);
     document.fonts.ready.then(scheduleMeasure);
     measure();
     return () => {
       disposed = true;
       observer.disconnect();
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', scheduleMeasure);
-      motion.removeEventListener('change', scheduleMeasure);
-      desktop.removeEventListener('change', scheduleMeasure);
+      window.removeEventListener('resize', onResize);
+      motion.removeEventListener('change', onResize);
+      desktop.removeEventListener('change', onResize);
       window.cancelAnimationFrame(frame);
       window.cancelAnimationFrame(measureFrame);
     };

@@ -2,6 +2,59 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { profileStamps } from '../src/utils/profileStamps.ts';
 import * as motion from '../src/utils/journeyMotion.ts';
+import * as journey from '../src/utils/stationJourney.ts';
+
+test('a station dwell holds the train while boarding advances without more scrolling', () => {
+  assert.equal(typeof journey.StationJourney, 'function');
+  const controller = new journey.StationJourney();
+  const stops = [{ id: 'home', y: 0 }, { id: 'about', y: 500 }];
+  controller.step(100, 0, stops);
+  assert.equal(controller.step(510, 100, stops).phase, 'arriving');
+  const early = controller.step(510, 500, stops);
+  const late = controller.step(510, 1200, stops);
+  assert.equal(early.y, 500);
+  assert.equal(late.y, 500);
+  assert.equal(early.phase, 'dwelling');
+  assert.equal(early.stopId, 'about');
+  assert(late.dwellProgress > early.dwellProgress);
+  assert.equal(late.needsFrame, true);
+  assert.equal(controller.step(550, 2150, stops).phase, 'departing');
+  const finished = controller.step(550, 2500, stops);
+  assert.equal(finished.y, 550);
+  assert.equal(finished.phase, 'travel');
+  assert.equal(finished.needsFrame, false);
+  assert.equal(controller.step(550, 2600, stops).phase, 'travel');
+});
+
+test('large scroll jumps cancel or skip dwell and never queue missed stations', () => {
+  const controller = new journey.StationJourney();
+  const stops = [{ id: 'home', y: 0 }, { id: 'about', y: 500 }, { id: 'team', y: 1200 }];
+  controller.step(100, 0, stops);
+  assert.equal(controller.step(510, 100, stops).phase, 'arriving');
+  const skipped = controller.step(2000, 300, stops);
+  assert.equal(skipped.y, 2000);
+  assert.equal(skipped.phase, 'travel');
+  assert.equal(skipped.needsFrame, false);
+  assert.equal(controller.step(2000, 4000, stops).phase, 'travel');
+  assert.equal(controller.step(1190, 4200, stops).stopId, 'team', 'Reverse crossing can stop once again');
+  controller.reset(800);
+  const reset = controller.step(800, 4500, stops);
+  assert.equal(reset.y, 800);
+  assert.equal(reset.stopId, null);
+});
+
+test('origin boarding starts while parked and settles without an endless animation loop', () => {
+  const controller = new journey.StationJourney();
+  const stops = [{ id: 'home', y: 0 }];
+  const start = controller.step(0, 0, stops);
+  assert.equal(start.y, 0);
+  assert.equal(start.phase, 'dwelling');
+  assert.equal(start.stopId, 'home');
+  assert(controller.step(0, 900, stops).dwellProgress > start.dwellProgress);
+  const end = controller.step(0, 2500, stops);
+  assert.equal(end.phase, 'travel');
+  assert.equal(end.needsFrame, false);
+});
 
 test('each current member keeps a distinct repeatable stamp collection with no duplicates', () => {
   const members = ['kobe', 'ian', 'tyrone', 'allen', 'tristan'];
