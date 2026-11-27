@@ -23,27 +23,6 @@ const socials = { facebook: "https://facebook.com", instagram: "https://instagra
 // TODO: replace names, handles, photos, bios, skills, projects and links with real details.
 export const team: Member[] = [
   {
-    id: "kobe",
-    name: "Kobe",
-    handle: "@swilylent",
-    photo: "/images/kobe-profile.jpg?v=4",
-    website: "https://business-portfolio-kobecuison-omega.vercel.app/",
-    accent: "#302d2b",
-    tagline: "Aspiring Software Engineer",
-    bio: "DOST Scholar and BSIT student who turns challenges into growth. I thrive on learning, adapt quickly, and commit fully to what I start. Focused, curious, and ready to take on opportunities that push me beyond my comfort zone.",
-    skills: ["Python", "SQL", "Flutter", "TypeScript", "React", "UI/UX Design", "Vite", "Tailwind CSS"],
-    projects: [
-      { title: "YanKicks", description: "A full-featured e-commerce platform for sneakers and streetwear, featuring dynamic product catalogs, user authentication, cart management, and database integration." },
-      { title: "SimbAI", description: "A cross-platform mobile app for exploring churches, planning Visita Iglesia routes, and accessing parish schedules, with navigation and community features." },
-      { title: "AWS Hugo Website", description: "The official AWS Cloud Club – Hugo website, showcasing events, resources, and member initiatives through dynamic content and backend integration." }
-    ],
-    socials: {
-      facebook: "https://www.facebook.com/Yukkurishinu",
-      instagram: "https://www.instagram.com/swilylent/",
-      github: "https://github.com/SushiShyDoll"
-    },
-  },
-  {
     id: "ian",
     name: "Ian",
     handle: "@iansane222",
@@ -132,6 +111,27 @@ export const team: Member[] = [
       instagram: "https://instagram.com/te._.ej",
       github: "https://github.com/tristan1804"
     }
+  },
+    {
+    id: "kobe",
+    name: "Kobe",
+    handle: "@swilylent",
+    photo: "/images/kobe-profile.jpg?v=4",
+    website: "https://business-portfolio-kobecuison-omega.vercel.app/",
+    accent: "#302d2b",
+    tagline: "Aspiring Software Engineer",
+    bio: "DOST Scholar and BSIT student who turns challenges into growth. I thrive on learning, adapt quickly, and commit fully to what I start. Focused, curious, and ready to take on opportunities that push me beyond my comfort zone.",
+    skills: ["Python", "SQL", "Flutter", "TypeScript", "React", "UI/UX Design", "Vite", "Tailwind CSS"],
+    projects: [
+      { title: "YanKicks", description: "A full-featured e-commerce platform for sneakers and streetwear, featuring dynamic product catalogs, user authentication, cart management, and database integration." },
+      { title: "SimbAI", description: "A cross-platform mobile app for exploring churches, planning Visita Iglesia routes, and accessing parish schedules, with navigation and community features." },
+      { title: "AWS Hugo Website", description: "The official AWS Cloud Club – Hugo website, showcasing events, resources, and member initiatives through dynamic content and backend integration." }
+    ],
+    socials: {
+      facebook: "https://www.facebook.com/Yukkurishinu",
+      instagram: "https://www.instagram.com/swilylent/",
+      github: "https://github.com/SushiShyDoll"
+    },
   },
 ];
 
