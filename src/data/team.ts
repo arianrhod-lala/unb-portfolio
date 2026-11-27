@@ -37,7 +37,7 @@ export const team: Member[] = [
       { title: "SimbAI", description: "A cross-platform mobile app for exploring churches, planning Visita Iglesia routes, and accessing parish schedules, with navigation and community features." },
       { title: "AWS Hugo Website", description: "The official AWS Cloud Club – Hugo website, showcasing events, resources, and member initiatives through dynamic content and backend integration." }
     ],
-      socials: {
+    socials: {
       facebook: "https://www.facebook.com/Yukkurishinu",
       instagram: "https://www.instagram.com/swilylent/",
       github: "https://github.com/SushiShyDoll"
@@ -64,18 +64,32 @@ export const team: Member[] = [
     id: "tyrone",
     name: "Tyrone",
     handle: "@r.on_r.on",
-    photo: "/images/tyrone.jpg?v=4",
+    photo: "/images/tyrone.jpg?v=5",
     website: "https://tyronejohn.netlify.app/",
     accent: "#6b0f2a",
-    tagline: "Full-Stack Developer & Systems Enthusiast",
-    bio: "lorem ipsum dolor sit amet consectetur adipiscing elit exceptur eiusmod quas mollit ut ex nulla ut ullamco sunt sint at cum placeat excepturi corrupti sit adipiscing soluta ullamco et dolores praesentium",
-    skills: ["JavaScript", "Node.js", "Express", "Database Design", "REST APIs"],
+    tagline: "IT Student & Technical Builder",
+    bio: "Fourth-year BSIT student who learns by building, mostly through team projects. I work on web and mobile interfaces and databases, and I've completed DataCamp courses in Python and Power BI.",
+    skills: ["HTML & CSS", "JavaScript", "PHP", "MySQL", "Flutter", "Python", "Power BI (intro)", "Git"],
     projects: [
-      { title: "Express Transit API", description: "High-performance transit timetable microservice built for fast querying." },
-      { title: "Peer Study Scheduler", description: "Collaborative calendar and task manager for university engineering students." },
-      { title: "Batch Asset Compressor", description: "Lightweight tool for automating media optimization on web projects." }
+      {
+        title: "SimbAI",
+        description: "Flutter prototype of a bilingual navigation app that helps Filipino commuters find public transport routes to parish churches in Laguna. Team project; I fixed pages and made UI changes (buttons, navbar, and other interface edits)."
+      },
+      {
+        title: "YanKicks",
+        description: "Sneaker e-commerce site with a customer storefront and admin panel, built with PHP and MySQL. Team project; I fixed pages, edited UI elements, and added a page.",
+        link: "https://github.com/allenpasion05-droid/YankicksWeb_Dashboard"
+      },
+      {
+        title: "Paw Patrol",
+        description: "Course project website for a fictional pet-care initiative, built with HTML, CSS, and JavaScript. Team project; I fixed pages and made UI edits.",
+        link: "https://group7-webdev-project.github.io/paw-patrol"
+      }
     ],
-    socials
+    socials: {
+      instagram: "https://www.instagram.com/r.on_r.on/",
+      github: "https://github.com/Ty-john"
+    }
   },
   {
     id: "allen",
