@@ -26,7 +26,7 @@ export const team: Member[] = [
     id: "kobe",
     name: "Kobe",
     handle: "@swilylent",
-    photo: "/images/kobe.jpg?v=4",
+    photo: "/images/kobe-profile.jpg?v=4",
     website: "https://business-portfolio-kobecuison-omega.vercel.app/",
     accent: "#302d2b",
     tagline: "Aspiring Software Engineer",
