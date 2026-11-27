@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Original scalloped ticket stamp, all artwork inset from the viewBox. -->
+  <g stroke="#b66e4d" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 23h90v23a10 10 0 0 0 0 20v31H15V66a10 10 0 0 0 0-20V23Z" fill="#f8e6d8" stroke-width="2.5"/>
+    <path d="M23 31h74v13m0 24v21H23V68m0-24V31M32 78h56" stroke-width="1.2" stroke-dasharray="2 3"/>
+    <circle cx="80" cy="44" r="8" fill="#efbb7b" stroke="none"/>
+    <rect x="37" y="45" width="46" height="25" rx="6" stroke-width="2.2"/>
+    <path d="M47 45v25m20-25v25m0-18h9v9h-9M53 52h8v9h-8M39 74h43" stroke-width="1.6"/>
+    <circle cx="47" cy="71" r="3" fill="#b66e4d"/><circle cx="73" cy="71" r="3" fill="#b66e4d"/>
+    <g fill="#b66e4d" stroke="none" font-family="Arial,sans-serif" text-anchor="middle">
+      <text x="60" y="38" font-size="7.5" font-weight="700" letter-spacing="1">SUNSET RIDE</text>
+      <text x="60" y="88" font-size="7" letter-spacing="1.3">MANILA · UNB</text>
+    </g>
+  </g>
+</svg>

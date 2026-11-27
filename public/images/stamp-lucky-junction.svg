@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Original rounded diamond junction stamp. -->
+  <g stroke="#9c833f" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M54 11q6-6 12 0l43 43q6 6 0 12l-43 43q-6 6-12 0L11 66q-6-6 0-12Z" fill="#f5edcf" stroke-width="2.5"/>
+    <path d="M60 18l42 42-42 42-42-42Z" stroke-width="1.1" stroke-dasharray="2 3"/>
+    <rect x="44" y="38" width="32" height="41" rx="10" stroke-width="2.3"/>
+    <rect x="49" y="44" width="22" height="14" rx="3" fill="#e8d898" stroke-width="1.5"/>
+    <path d="M60 44v14M49 70h3m16 0h3M56 64q4 4 8 0M48 81l-8 9m32-9 8 9M47 86h26M60 27v5m-2.5-2.5h5M29 57v6m-3-3h6M91 57v6m-3-3h6" stroke-width="1.8"/>
+    <g fill="#9c833f" stroke="none" font-family="Arial,sans-serif" text-anchor="middle">
+      <text x="60" y="36" font-size="6.5" font-weight="700" letter-spacing=".7">LUCKY LINE</text>
+      <text x="60" y="97" font-size="6.5" letter-spacing="1">UNB</text>
+    </g>
+  </g>
+</svg>

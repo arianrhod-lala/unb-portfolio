@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Original flower-shaped railway souvenir stamp. -->
+  <g stroke="#8a6395" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 9C73-2 87 12 84 25C102 19 115 37 104 50C120 60 111 81 95 82C99 101 79 112 67 101C55 117 36 107 35 93C17 100 4 82 16 68C0 56 9 36 25 36C20 17 42 7 52 20Z" fill="#f0e3ef" stroke-width="2.4"/>
+    <circle cx="60" cy="59" r="35" stroke-dasharray="2 3"/>
+    <rect x="43" y="37" width="34" height="43" rx="10" stroke-width="2.3"/>
+    <rect x="49" y="43" width="22" height="15" rx="4" fill="#d8c2de" stroke-width="1.5"/>
+    <path d="M60 43v15M49 70h4m14 0h4M56 65q4 4 8 0M47 82l-5 7m31-7 5 7M47 86h26M54 37l3-5h6l3 5" stroke-width="2"/>
+    <g fill="#8a6395" stroke="none" font-family="Arial,sans-serif" text-anchor="middle">
+      <text x="60" y="27" font-size="7.5" font-weight="700" letter-spacing="1">LOCAL BLOOMS</text>
+      <text x="60" y="99" font-size="7" letter-spacing="1.3">UNB · 01</text>
+    </g>
+  </g>
+</svg>

@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import TrainIllustration from './TrainIllustration';
+import RailPassenger from './RailPassenger';
 import { STATIONS } from '../data/stations';
-import { RAILWAY_TRIAL, STATION_SCENES, railPaths, trackOffset, trackAngle, type StationScene } from '../utils/journeyMotion';
+import { RAILWAY_TRIAL, STATION_SCENES, passengerPose, railPaths, trackOffset, trackAngle, type StationScene } from '../utils/journeyMotion';
 
 const stops = STATIONS.map(station => station.id);
+const departures = stops.flatMap((stop, index) => Array.from({ length: index % 2 + 1 }, (_, person) => ({ stop, person })));
+const boarders = Array.from({ length: departures.length }, (_, index) => index);
 
 export default function PageRailway({ activeSection }: { activeSection: string }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -23,6 +26,9 @@ export default function PageRailway({ activeSection }: { activeSection: string }
     let measureFrame = 0;
     let disposed = false;
     let travel = 0;
+    let measuredStops: Array<{ id: string; top: number }> = [];
+    const boardingPeople = [...track.querySelectorAll<HTMLElement>('[data-boarding]')];
+    const exitingPeople = [...track.querySelectorAll<HTMLElement>('[data-exit]')];
 
     const update = () => {
       frame = 0;
@@ -39,6 +45,24 @@ export default function PageRailway({ activeSection }: { activeSection: string }
       train.style.transform = `translate(${offset}px, ${y}px)`;
       train.style.setProperty('--train-zoom', String(zoom));
       train.style.setProperty('--train-angle', `${motion.matches ? 0 : trackAngle(center, bendRef.current)}deg`);
+      const width = track.clientWidth;
+      boardingPeople.forEach((person, index) => {
+        const pose = passengerPose((y - index * 7) / 65, 'board', width);
+        person.style.transform = `translate(${(index % 2 ? 1 : -1) * width * 0.24}px, ${pose.y}px)`;
+        person.style.opacity = motion.matches ? '0' : String(pose.opacity);
+      });
+      exitingPeople.forEach((person, index) => {
+        const departure = departures[index];
+        const stop = measuredStops.find(station => station.id === departure.stop);
+        if (!stop) return;
+        const start = Math.max(0, Math.min(travel - 150, stop.top + width / 2 - 34 * train.clientWidth / 44));
+        const pose = passengerPose((y - start) / 120 - departure.person * 0.16, 'exit', width);
+        // Desktop platforms alternate sides; the mobile track only has room to its right.
+        const direction = width < 44 || departure.stop === 'about' || departure.stop === 'contact' ? 1 : -1;
+        const x = trackOffset(stop.top, bendRef.current) + width / 2 + direction * pose.x - (width < 44 ? 3 : 7);
+        person.style.transform = `translate(${x}px, ${stop.top + width / 2 + pose.y - (width < 44 ? 5 : 10)}px)`;
+        person.style.opacity = motion.matches ? '0' : String(pose.opacity);
+      });
     };
     const measure = () => {
       measureFrame = 0;
@@ -49,6 +73,7 @@ export default function PageRailway({ activeSection }: { activeSection: string }
         const section = document.getElementById(id);
         return section ? [{ id, top: Math.max(0, section.getBoundingClientRect().top - trackTop + 48) }] : [];
       });
+      measuredStops = next;
       const enabled = RAILWAY_TRIAL.enabled && desktop.matches && !motion.matches;
       bendRef.current = next.flatMap((stop, index) => {
         const config = STATION_SCENES.find(scene => scene.id === stop.id);
@@ -72,6 +97,7 @@ export default function PageRailway({ activeSection }: { activeSection: string }
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', scheduleMeasure);
     motion.addEventListener('change', scheduleMeasure);
+    desktop.addEventListener('change', scheduleMeasure);
     document.fonts.ready.then(scheduleMeasure);
     measure();
     return () => {
@@ -80,6 +106,7 @@ export default function PageRailway({ activeSection }: { activeSection: string }
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', scheduleMeasure);
       motion.removeEventListener('change', scheduleMeasure);
+      desktop.removeEventListener('change', scheduleMeasure);
       window.cancelAnimationFrame(frame);
       window.cancelAnimationFrame(measureFrame);
     };
@@ -94,8 +121,12 @@ export default function PageRailway({ activeSection }: { activeSection: string }
       </svg>
       {stations.map((stop, index) => <span key={stop.id} data-stop={stop.id} className={`journey-station${stop.id === activeSection ? ' is-active' : ''}`} style={{ top: stop.top, left: trackOffset(stop.top, bendRef.current) }}>0{index + 1}</span>)}
       <div ref={trainRef} className="journey-train">
-        <div className="journey-train__model"><TrainIllustration /></div>
+        <div className="journey-train__model">
+          <TrainIllustration />
+          {boarders.map(index => <span key={index} className="journey-passenger journey-passenger--boarding" data-boarding={index}><RailPassenger /></span>)}
+        </div>
       </div>
+      {departures.map(({ stop, person }) => <span key={`${stop}-${person}`} className="journey-passenger" data-exit={stop} data-person={person}><RailPassenger /></span>)}
       <span className="journey-buffer" />
     </div>
   );

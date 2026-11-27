@@ -2,6 +2,23 @@
 export const RAILWAY_TRIAL = { enabled: true, bendPixels: 24, maxZoom: 1.35 };
 export interface TrackBend { start: number; end: number; amplitude: number }
 export interface StationScene extends TrackBend { id: string }
+// A pure scroll scene: reversing or jumping never leaves a timer or person behind.
+export function passengerPose(progress: number, kind: 'board' | 'exit', trackWidth: number) {
+  const phase = Math.max(0, Math.min(1, progress));
+  const compact = trackWidth < 44;
+  if (kind === 'board') {
+    return {
+      x: 0,
+      y: -24 + phase * 49,
+      opacity: progress < 0 || progress >= 1 ? 0 : Math.min(1, (1 - phase) * 4),
+    };
+  }
+  return {
+    x: phase * (compact ? 12 : 62),
+    y: phase * (compact ? 18 : 25),
+    opacity: progress <= 0 || progress >= 1 ? 0 : Math.min(1, phase * 6, (1 - phase) * 4),
+  };
+}
 export const STATION_SCENES = [
   { id: 'about', amplitude: RAILWAY_TRIAL.bendPixels },
   { id: 'team', amplitude: -20 },

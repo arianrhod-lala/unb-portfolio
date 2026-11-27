@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" fill="none">
-  <g transform="rotate(7 100 60)" stroke="#773d43" opacity=".11" stroke-linecap="round" stroke-linejoin="round">
+  <g transform="rotate(7 100 60)" stroke="#773d43" opacity=".76" stroke-linecap="round" stroke-linejoin="round">
     <path d="M18 21h164v78H18z" stroke-width="2.5" stroke-dasharray="61 2 34 3 72 2"/>
     <path d="M24 27h152v66H24zM31 66h138" stroke-width="1"/>
     <path d="M34 55V39l14-5 14 5v16M39 55V43h18v12M69 41h95M71 46h90M74 51h84M68 55h97" stroke-width="2"/>

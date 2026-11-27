@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Original station shield stamp. -->
+  <g stroke="#537c93" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 9l43 14v39c0 24-24 39-43 48C41 101 17 86 17 62V23L60 9Z" fill="#e0edf1" stroke-width="2.5"/>
+    <path d="M60 17l35 12v33c0 19-20 33-35 40C45 95 25 81 25 62V29L60 17Z" stroke-width="1.1" stroke-dasharray="2 3"/>
+    <path d="M33 60V42h7v18m40 0V37h7v23M31 63h58" stroke-width="1.5"/>
+    <rect x="44" y="40" width="32" height="41" rx="9" fill="#e0edf1" stroke-width="2.3"/>
+    <rect x="49" y="46" width="22" height="14" rx="3" fill="#b7d3df" stroke-width="1.5"/>
+    <path d="M60 46v14M49 72h3m16 0h3M56 67q4 3 8 0M47 82l-4 7m30-7 4 7M48 86h24" stroke-width="2"/>
+    <g fill="#537c93" stroke="none" font-family="Arial,sans-serif" text-anchor="middle">
+      <text x="60" y="33" font-size="7.5" font-weight="700" letter-spacing="1">CITY LOCAL</text>
+      <text x="60" y="97" font-size="6.5" letter-spacing="1">UNB</text>
+    </g>
+  </g>
+</svg>

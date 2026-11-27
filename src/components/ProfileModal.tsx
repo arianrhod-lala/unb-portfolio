@@ -3,6 +3,8 @@ import { findMember, team } from "../data/team";
 import Socials from "./Socials";
 import PersonalWebsite from "./PersonalWebsite";
 import MemberPassBanner from "./MemberPassBanner";
+import ProfileStamps from "./ProfileStamps";
+import { profileStamps } from "../utils/profileStamps";
 
 interface ProfileModalProps {
   memberId: string | null;
@@ -64,6 +66,7 @@ export default function ProfileModal({ memberId, onClose, onSelectMember }: Prof
   const currentIndex = team.findIndex((m) => m.id === member.id);
   const prevMember = team[(currentIndex - 1 + team.length) % team.length];
   const nextMember = team[(currentIndex + 1) % team.length];
+  const stamps = profileStamps(member.id);
 
   return (
     <dialog ref={dialogRef} className="modal-content profile-pass" aria-label={`${member.name}'s Profile`}
@@ -110,8 +113,8 @@ export default function ProfileModal({ memberId, onClose, onSelectMember }: Prof
           <div>
             <h3>Projects</h3>
             <ul className="projects">
-              {member.projects.map((p) => (
-                <li key={p.title}>
+              {member.projects.map((p, index) => (
+                <li key={p.title} style={{ backgroundImage: `url('${stamps[(index + 5) % stamps.length].src}')` }}>
                   <h4>{p.link ? <a href={p.link} target="_blank" rel="noopener noreferrer">{p.title}</a> : p.title}</h4>
                   <p>{p.description}</p>
                 </li>
@@ -119,6 +122,8 @@ export default function ProfileModal({ memberId, onClose, onSelectMember }: Prof
             </ul>
           </div>
         </div>
+
+        <ProfileStamps memberId={member.id} />
 
         <div className="profile-modal-footer">
           <button className="pill pill--outline" onClick={() => onSelectMember(prevMember.id)}>

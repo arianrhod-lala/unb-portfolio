@@ -3,6 +3,8 @@ import { findMember, team } from "../data/team";
 import Socials from "../components/Socials";
 import PersonalWebsite from "../components/PersonalWebsite";
 import MemberPassBanner from "../components/MemberPassBanner";
+import ProfileStamps from "../components/ProfileStamps";
+import { profileStamps } from "../utils/profileStamps";
 
 export default function Profile() {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +21,7 @@ export default function Profile() {
 
   const idx = team.findIndex((m) => m.id === member.id);
   const next = team[(idx + 1) % team.length];
+  const stamps = profileStamps(member.id);
 
   return (
     <section className="page profile profile-pass">
@@ -44,8 +47,8 @@ export default function Profile() {
         <div>
           <h3>Projects</h3>
           <ul className="projects">
-            {member.projects.map((p) => (
-              <li key={p.title}>
+            {member.projects.map((p, index) => (
+              <li key={p.title} style={{ backgroundImage: `url('${stamps[(index + 5) % stamps.length].src}')` }}>
                 <h4>{p.link ? <a href={p.link}>{p.title}</a> : p.title}</h4>
                 <p>{p.description}</p>
               </li>
@@ -53,6 +56,8 @@ export default function Profile() {
           </ul>
         </div>
       </div>
+
+      <ProfileStamps memberId={member.id} />
 
       <div className="profile-nav">
         <Link className="pill" to="/team">All members</Link>
