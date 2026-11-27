@@ -8,88 +8,143 @@ const fs = require('node:fs');
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   const settle = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-  const scrollTo = async top => {
-    await page.evaluate(top => window.scrollTo({ top, behavior: 'instant' }), top);
+  const scrollTrain = async y => {
+    await page.evaluate(y => {
+      const track = document.querySelector('.journey-track');
+      const train = document.querySelector('.journey-train');
+      const travel = track.clientHeight - train.offsetHeight - 12;
+      window.scrollTo({ top: y / travel * (document.documentElement.scrollHeight - innerHeight), behavior: 'instant' });
+    }, y);
     await settle();
   };
-  const signatures = new Map();
   fs.mkdirSync('docs/screenshots', { recursive: true });
   try {
+    const signatures = new Map();
     for (const width of [1440, 390, 320]) {
       await page.setViewportSize({ width, height: 900 });
       for (const member of ['kobe', 'ian', 'tyrone', 'allen', 'tristan']) {
         await page.goto(`http://127.0.0.1:5173/#/team/${member}`);
         const dialog = page.getByRole('dialog');
         await dialog.waitFor();
-        await dialog.locator('.profile-stamps img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
+        const background = dialog.locator('.profile-stamps');
+        await background.locator('img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
+        await dialog.evaluate(element => Promise.all(element.getAnimations().map(animation => animation.finished)));
         await settle();
-        assert.equal(await dialog.locator('.profile-stamps img').count(), 5);
-        assert(await dialog.evaluate(element => element.scrollWidth <= element.clientWidth + 1), `${member}/${width}: profile overflows`);
-        const stamps = await dialog.locator('.profile-stamps').evaluate(element => {
+        assert.equal(await background.locator('img').count(), 2);
+        assert.equal(await dialog.getByText('Collected along the line').count(), 0);
+        assert(await dialog.evaluate(element => element.scrollWidth <= element.clientWidth + 1), `${member}/${width}: profile overflow`);
+        const stamps = await background.evaluate(element => {
           const area = element.getBoundingClientRect();
-          const sheet = element.closest('.profile-pass-sheet').getBoundingClientRect();
           return [...element.querySelectorAll('img')].map(image => {
             const box = image.getBoundingClientRect();
             return { src: image.getAttribute('src'), rotation: image.style.transform,
-              contained: box.left >= area.left && box.right <= area.right && box.top >= area.top && box.bottom <= area.bottom && box.left >= sheet.left && box.right <= sheet.right };
+              opacity: Number(getComputedStyle(image).opacity),
+              contained: box.left >= area.left && box.right <= area.right && box.top >= area.top && box.bottom <= area.bottom };
           });
         });
-        assert(stamps.every(stamp => stamp.contained), `${member}/${width}: rotated stamp crosses its border`);
+        assert(stamps.every(stamp => stamp.contained && stamp.opacity > 0 && stamp.opacity <= 0.16), `${member}/${width}: background containment/readability`);
         const signature = stamps.map(stamp => stamp.src + stamp.rotation).join('|');
-        if (signatures.has(member)) assert.equal(signature, signatures.get(member), 'Collection must survive reopening and resizing');
+        if (signatures.has(member)) assert.equal(signature, signatures.get(member), 'Member stamps must survive reopening and resizing');
         else signatures.set(member, signature);
-        if (member === 'ian') {
-          await dialog.locator('.profile-stamps').scrollIntoViewIfNeeded();
-          await page.screenshot({ path: `docs/screenshots/transit-profile-${width}.png` });
-        }
+        if (member === 'ian') await page.screenshot({ path: `docs/screenshots/revised-pass-${width}.png` });
         await page.keyboard.press('Escape');
         await dialog.waitFor({ state: 'hidden' });
       }
     }
-    assert.equal(new Set(signatures.values()).size, 5, 'Profiles must have different collections');
+    assert.equal(new Set(signatures.values()).size, 5);
 
-    for (const width of [1440, 390, 320]) {
+    for (const width of [1440, 1101, 1100, 390, 320]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('http://127.0.0.1:5173/');
       await page.evaluate(() => document.fonts.ready);
       await settle();
-      assert.equal(await page.locator('.journey-train [data-car]').count(), 4);
-      const visibleBoarders = () => page.locator('[data-boarding]').evaluateAll(people => people.filter(person => Number(getComputedStyle(person).opacity) > 0).length);
-      assert(await visibleBoarders() > 0, 'People enter from above at origin');
+      assert.equal(await page.locator('[data-car]').count(), 3);
+      assert.equal(await page.locator('[data-coupling]').count(), 2);
       const geometry = await page.evaluate(() => {
-        const track = document.querySelector('.journey-track');
         const train = document.querySelector('.journey-train');
-        const travel = track.clientHeight - train.offsetHeight - 12;
-        const maxScroll = document.documentElement.scrollHeight - innerHeight;
-        return { maxScroll, travel, width: track.clientWidth, trainWidth: train.clientWidth,
-          stops: [...document.querySelectorAll('.journey-station')].map(stop => ({ id: stop.dataset.stop, top: parseFloat(stop.style.top) })) };
+        const track = document.querySelector('.journey-track');
+        const origin = track.getBoundingClientRect().top;
+        return { travel: track.clientHeight - train.offsetHeight - 12,
+          offsets: [...document.querySelectorAll('[data-car]')].map(car => new DOMPoint(22, 36).matrixTransform(car.getScreenCTM()).y - origin),
+          stops: [...document.querySelectorAll('.journey-station')].map(stop => ({ id: stop.dataset.stop, top: parseFloat(stop.style.top) + track.clientWidth / 2 })) };
       });
-      for (const [index, stop] of geometry.stops.entries()) {
-        const start = Math.max(0, Math.min(geometry.travel - 150, stop.top + geometry.width / 2 - 34 * geometry.trainWidth / 44));
-        const target = (start + 60) / geometry.travel * geometry.maxScroll;
-        await scrollTo(target);
-        const people = page.locator(`[data-exit="${stop.id}"]`);
-        assert.equal(await people.evaluateAll(people => people.filter(person => Number(getComputedStyle(person).opacity) > 0.1).length), index % 2 + 1, `${width}/${stop.id}: expected 1–2 exits`);
-        const snapshot = await people.evaluateAll(people => people.map(person => [person.style.transform, person.style.opacity]));
-        assert(await people.evaluateAll(people => people.every(person => {
-          const box = person.getBoundingClientRect();
-          return box.left >= 0 && box.right <= innerWidth;
-        })), 'Commuters leave inside the screen');
-        if (width === 1440 && stop.id === 'about') await page.screenshot({ path: 'docs/screenshots/transit-passengers-desktop.png' });
-        await scrollTo((start + 180) / geometry.travel * geometry.maxScroll);
-        assert.equal(await people.evaluateAll(people => people.filter(person => Number(getComputedStyle(person).opacity) > 0).length), 0, 'People disappear after leaving');
-        await scrollTo(target);
-        const reversed = await people.evaluateAll(people => people.map(person => [person.style.transform, person.style.opacity]));
-        assert.deepEqual(reversed, snapshot, 'Reverse scrolling restores the same scene');
+      if (width > 1100) {
+        const entry = geometry.stops[1].top - 22 - 180 - geometry.offsets[1];
+        await scrollTrain(entry);
+        const angles = await page.locator('[data-car]').evaluateAll(cars => cars.map(car => {
+          const matrix = car.transform.baseVal.consolidate().matrix;
+          return Math.atan2(matrix.b, matrix.a) * 180 / Math.PI;
+        }));
+        assert(Math.abs(angles[0]) < 0.01, 'Rear car outside bend must stay straight');
+        assert(Math.abs(angles[2]) > 1, 'Front car in bend must turn independently');
       }
-      await scrollTo(geometry.maxScroll);
-      assert.equal(await visibleBoarders(), 0);
-      assert.equal(await page.locator('[data-exit]').evaluateAll(people => people.filter(person => Number(getComputedStyle(person).opacity) > 0).length), 0);
-      assert(await page.locator('.journey-train__model').evaluate(element => {
+      // Check real rendered car centers and coupling endpoints against SVG track geometry.
+      for (const step of [0.18, 0.26, 0.35, 0.5, 0.65, 0.82]) {
+        await scrollTrain(geometry.travel * step);
+        assert(await page.evaluate(() => {
+          const cars = [...document.querySelectorAll('[data-car]')];
+          const rail = document.querySelector('.journey-rails path');
+          const railMatrix = rail.getScreenCTM();
+          const railLength = rail.getTotalLength();
+          for (const car of cars) {
+            const center = new DOMPoint(22, 36).matrixTransform(car.getScreenCTM());
+            let distance = Infinity;
+            for (let tick = 0; tick <= railLength; tick += 1) {
+              const point = rail.getPointAtLength(tick).matrixTransform(railMatrix);
+              distance = Math.min(distance, Math.hypot(point.x - center.x, point.y - center.y));
+            }
+            if (distance > 1.5) return false;
+          }
+          return [...document.querySelectorAll('[data-coupling]')].every((joint, index) => {
+            const length = joint.getTotalLength();
+            const a = joint.getPointAtLength(0).matrixTransform(joint.getScreenCTM());
+            const b = joint.getPointAtLength(length).matrixTransform(joint.getScreenCTM());
+            const carA = new DOMPoint(22, 72).matrixTransform(cars[index].getScreenCTM());
+            const carB = new DOMPoint(22, 0).matrixTransform(cars[index + 1].getScreenCTM());
+            return Math.hypot(a.x - carA.x, a.y - carA.y) < 0.1 && Math.hypot(b.x - carB.x, b.y - carB.y) < 0.1;
+          });
+        }), `Cars/couplings must follow the track at ${width}/${step}`);
+      }
+      for (const stop of geometry.stops) {
+        for (const [car, offset] of geometry.offsets.entries()) {
+          const target = stop.id === 'home' ? 42 : Math.max(0, stop.top - offset + 12);
+          await scrollTrain(target);
+          const actors = page.locator(`[data-commuter="${stop.id}"][data-car-door="${car}"]`);
+          assert.equal(await actors.evaluateAll(people => people.filter(person => Number(getComputedStyle(person).opacity) > 0.1).length), 2, `${width}/${stop.id}/${car}: both side doors need visible people`);
+          assert.deepEqual(await actors.evaluateAll(people => people.map(person => Number(person.dataset.side)).sort()), [-1, 1]);
+          assert(await actors.evaluateAll(people => people.every(person => {
+            const box = person.getBoundingClientRect();
+            return box.left >= 0 && box.right <= innerWidth && box.width >= (innerWidth > 1100 ? 23.99 : 11.99);
+          })), `${width}/${stop.id}/${car}: visible commuters must stay on screen`);
+          if (car === 1 && stop.id === 'about' && [1440, 320].includes(width)) await page.screenshot({ path: `docs/screenshots/revised-commuters-${width}.png` });
+          const snapshot = await actors.evaluateAll(people => people.map(person => [person.style.transform, person.style.opacity]));
+          await scrollTrain(target + 200);
+          await scrollTrain(target);
+          assert.deepEqual(await actors.evaluateAll(people => people.map(person => [person.style.transform, person.style.opacity])), snapshot, 'Reverse scroll must restore commuter scene');
+        }
+      }
+      await scrollTrain(geometry.travel);
+      assert.equal(await page.locator('[data-commuter]').evaluateAll(people => people.filter(person => Number(getComputedStyle(person).opacity) > 0).length), 0);
+      assert(await page.locator('.journey-train').evaluate(element => {
         const box = element.getBoundingClientRect();
         const buffer = document.querySelector('.journey-buffer').getBoundingClientRect();
         return box.top >= 0 && box.bottom <= innerHeight && box.bottom <= buffer.top + 1;
-      }), 'Four-car train stops above the buffer');
+      }), 'Train must stop above the buffer');
+      assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'No page overflow');
+      if (width === 320) {
+        assert.equal(await page.locator('#team').getAttribute('data-scroll-mode'), 'pinned', 'The compact gutter must preserve the team browsing interaction');
+        await page.evaluate(() => {
+          const team = document.querySelector('#team');
+          const start = team.getBoundingClientRect().top + scrollY - 64;
+          window.scrollTo({ top: start + parseFloat(team.style.getPropertyValue('--team-travel')), behavior: 'instant' });
+        });
+        await settle();
+        assert(await page.locator('.team-scroller').evaluate(scroller => {
+          const view = scroller.getBoundingClientRect();
+          const last = scroller.querySelector('.member-card:last-child').getBoundingClientRect();
+          return last.left >= view.left - 1 && last.right <= view.right + 1;
+        }), 'The final team card must fit beside the compact passenger gutter');
+      }
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await settle();
       assert(await page.locator('.journey-passenger').evaluateAll(people => people.every(person => getComputedStyle(person).display === 'none')));
@@ -97,6 +152,6 @@ const fs = require('node:fs');
       await page.emulateMedia({ reducedMotion: 'no-preference' });
     }
     assert.deepEqual(errors, []);
-    console.log('PASS: stable individual collections and stamp containment for all five profiles at 1440/390/320px; four cars; boarding, 1–2 exits at every station, reverse/jump scroll, buffer and reduced motion.');
+    console.log('PASS: seeded background stamps/containment for all profiles; three independent cars, rail and coupling geometry; visible commuters on both sides of every car at all stops; reverse/jump scroll, buffer, reduced motion at 1440/1101/1100/390/320px.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

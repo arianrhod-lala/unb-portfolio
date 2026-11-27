@@ -1,22 +1,35 @@
 // Set enabled to false to park this experiment without changing the page layout.
-export const RAILWAY_TRIAL = { enabled: true, bendPixels: 24, maxZoom: 1.35 };
+export const RAILWAY_TRIAL = { enabled: true, bendPixels: 24 };
 export interface TrackBend { start: number; end: number; amplitude: number }
 export interface StationScene extends TrackBend { id: string }
-// A pure scroll scene: reversing or jumping never leaves a timer or person behind.
-export function passengerPose(progress: number, kind: 'board' | 'exit', trackWidth: number) {
+export interface CarPose { x: number; y: number; angle: number }
+
+// Sample each car separately: cars outside a bend remain straight.
+export function trainCarPoses(y: number, scale: number, trackWidth: number, bends: readonly TrackBend[]): CarPose[] {
+  return [36, 118, 200].map(center => {
+    const position = y + center * scale;
+    return { x: trackWidth / 2 + trackOffset(position, bends), y: position, angle: trackAngle(position, bends) };
+  });
+}
+
+// Side-door choreography follows the actual car, then joins the station platform.
+// Everything is scroll-derived, so scrubbing never accumulates timers or actors.
+export function commuterPose(progress: number, kind: 'board' | 'exit', car: CarPose, stationY: number, side: number, scale: number, compact: boolean) {
   const phase = Math.max(0, Math.min(1, progress));
-  const compact = trackWidth < 44;
-  if (kind === 'board') {
-    return {
-      x: 0,
-      y: -24 + phase * 49,
-      opacity: progress < 0 || progress >= 1 ? 0 : Math.min(1, (1 - phase) * 4),
-    };
-  }
+  const eased = phase * phase * (3 - 2 * phase);
+  const angle = car.angle * Math.PI / 180;
+  const doorDistance = 16 * scale + (compact ? 3 : 7);
+  const doorX = car.x + Math.cos(angle) * side * doorDistance;
+  const doorY = car.y + Math.sin(angle) * side * doorDistance;
+  const outward = kind === 'board' ? 1 - eased : eased;
   return {
-    x: phase * (compact ? 12 : 62),
-    y: phase * (compact ? 18 : 25),
-    opacity: progress <= 0 || progress >= 1 ? 0 : Math.min(1, phase * 6, (1 - phase) * 4),
+    x: doorX + side * outward * (compact ? 7 : 32),
+    y: doorY * (1 - outward) + (stationY + side * (compact ? 7 : 16)) * outward,
+    opacity: progress < 0 || progress >= 1 ? 0 : kind === 'board'
+      ? Math.min(1, (1 - phase) * 5)
+      : Math.min(1, phase * 7, (1 - phase) * 5),
+    stride: Math.sin(phase * Math.PI * 8) * 18,
+    bob: Math.sin(phase * Math.PI * 16) * (compact ? 0.4 : 1),
   };
 }
 export const STATION_SCENES = [

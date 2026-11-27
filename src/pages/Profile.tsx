@@ -25,6 +25,7 @@ export default function Profile() {
 
   return (
     <section className="page profile profile-pass">
+      <ProfileStamps memberId={member.id} />
       <MemberPassBanner number={idx + 1} total={team.length} />
       <div className="profile-head">
         <img className="member-photo profile-photo" src={member.photo} alt={member.name} style={{ borderColor: member.accent }} />
@@ -56,8 +57,6 @@ export default function Profile() {
           </ul>
         </div>
       </div>
-
-      <ProfileStamps memberId={member.id} />
 
       <div className="profile-nav">
         <Link className="pill" to="/team">All members</Link>

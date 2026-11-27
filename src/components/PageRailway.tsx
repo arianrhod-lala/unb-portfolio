@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import TrainIllustration from './TrainIllustration';
 import RailPassenger from './RailPassenger';
 import { STATIONS } from '../data/stations';
-import { RAILWAY_TRIAL, STATION_SCENES, passengerPose, railPaths, trackOffset, trackAngle, type StationScene } from '../utils/journeyMotion';
+import { RAILWAY_TRIAL, STATION_SCENES, commuterPose, trainCarPoses, railPaths, trackOffset, type StationScene } from '../utils/journeyMotion';
 
 const stops = STATIONS.map(station => station.id);
-const departures = stops.flatMap((stop, index) => Array.from({ length: index % 2 + 1 }, (_, person) => ({ stop, person })));
-const boarders = Array.from({ length: departures.length }, (_, index) => index);
+const commuters = stops.flatMap((stop, station) => [0, 1, 2].flatMap(car => [-1, 1].map((side, person) => ({
+  stop, car, side, person,
+  kind: station === 0 ? 'board' as const : station === stops.length - 1 ? 'exit' as const
+    : (car + person + station) % 2 ? 'board' as const : 'exit' as const,
+}))));
 
 export default function PageRailway({ activeSection }: { activeSection: string }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -27,41 +30,51 @@ export default function PageRailway({ activeSection }: { activeSection: string }
     let disposed = false;
     let travel = 0;
     let measuredStops: Array<{ id: string; top: number }> = [];
-    const boardingPeople = [...track.querySelectorAll<HTMLElement>('[data-boarding]')];
-    const exitingPeople = [...track.querySelectorAll<HTMLElement>('[data-exit]')];
+    const cars = [...train.querySelectorAll<SVGGElement>('[data-car]')];
+    const couplings = [...train.querySelectorAll<SVGPathElement>('[data-coupling]')];
+    const people = [...track.querySelectorAll<HTMLElement>('[data-commuter]')];
 
     const update = () => {
       frame = 0;
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       const progress = Math.max(0, Math.min(1, window.scrollY / maxScroll));
       const y = motion.matches ? 0 : progress * travel;
-      const center = y + train.offsetHeight / 2;
-      const offset = motion.matches ? 0 : trackOffset(center, bendRef.current);
-      const scene = bendRef.current.find(event => event.amplitude && center > event.start && center < event.end);
-      const sceneOffset = scene ? trackOffset(center, [scene]) : 0;
-      const closeup = scene ? Math.min(1, Math.max(0, sceneOffset / scene.amplitude) * 1.4) : 0;
-      const zoom = 1 + (RAILWAY_TRIAL.maxZoom - 1) * closeup;
-      track.dataset.event = motion.matches ? 'parked' : scene?.id ?? 'travel';
-      train.style.transform = `translate(${offset}px, ${y}px)`;
-      train.style.setProperty('--train-zoom', String(zoom));
-      train.style.setProperty('--train-angle', `${motion.matches ? 0 : trackAngle(center, bendRef.current)}deg`);
       const width = track.clientWidth;
-      boardingPeople.forEach((person, index) => {
-        const pose = passengerPose((y - index * 7) / 65, 'board', width);
-        person.style.transform = `translate(${(index % 2 ? 1 : -1) * width * 0.24}px, ${pose.y}px)`;
-        person.style.opacity = motion.matches ? '0' : String(pose.opacity);
+      const scale = train.clientWidth / 44;
+      const compact = !desktop.matches;
+      const poses = trainCarPoses(y, scale, width, bendRef.current);
+      const scene = bendRef.current.find(event => event.amplitude && poses.some(car => car.y > event.start && car.y < event.end));
+      track.dataset.event = motion.matches ? 'parked' : scene?.id ?? 'travel';
+      train.style.transform = `translateY(${y}px)`;
+      cars.forEach((car, index) => {
+        const pose = poses[index];
+        const offset = (pose.x - width / 2) / scale;
+        car.setAttribute('transform', `translate(${offset} ${index * 82}) rotate(${pose.angle} 22 36)`);
       });
-      exitingPeople.forEach((person, index) => {
-        const departure = departures[index];
-        const stop = measuredStops.find(station => station.id === departure.stop);
-        if (!stop) return;
-        const start = Math.max(0, Math.min(travel - 150, stop.top + width / 2 - 34 * train.clientWidth / 44));
-        const pose = passengerPose((y - start) / 120 - departure.person * 0.16, 'exit', width);
-        // Desktop platforms alternate sides; the mobile track only has room to its right.
-        const direction = width < 44 || departure.stop === 'about' || departure.stop === 'contact' ? 1 : -1;
-        const x = trackOffset(stop.top, bendRef.current) + width / 2 + direction * pose.x - (width < 44 ? 3 : 7);
-        person.style.transform = `translate(${x}px, ${stop.top + width / 2 + pose.y - (width < 44 ? 5 : 10)}px)`;
+      // Endpoints are derived from each car's own transform, keeping the joints attached.
+      couplings.forEach((coupling, index) => {
+        const endpoints = [poses[index], poses[index + 1]].map((car, end) => {
+          const distance = (end ? -36 : 36) * scale;
+          const angle = car.angle * Math.PI / 180;
+          return {
+            x: 22 + (car.x - width / 2 - Math.sin(angle) * distance) / scale,
+            y: (car.y - y + Math.cos(angle) * distance) / scale,
+          };
+        });
+        coupling.setAttribute('d', `M${endpoints[0].x} ${endpoints[0].y}L${endpoints[1].x} ${endpoints[1].y}`);
+      });
+      people.forEach((person, index) => {
+        const actor = commuters[index];
+        const station = measuredStops.find(stop => stop.id === actor.stop);
+        if (!station) return;
+        const stationY = station.top + width / 2;
+        const carOffset = (36 + actor.car * 82) * scale;
+        const start = actor.stop === 'home' ? 0 : Math.max(0, Math.min(travel - 156, stationY - carOffset - 48));
+        const phase = (y - start) / 132 - actor.person * 0.09;
+        const pose = commuterPose(phase, actor.kind, poses[actor.car], actor.stop === 'home' ? poses[actor.car].y : stationY, actor.side, scale, compact);
+        person.style.transform = `translate(${pose.x - (compact ? 6 : 12)}px, ${pose.y - (compact ? 10 : 17) + pose.bob}px)`;
         person.style.opacity = motion.matches ? '0' : String(pose.opacity);
+        person.style.setProperty('--stride', `${pose.stride}deg`);
       });
     };
     const measure = () => {
@@ -121,12 +134,15 @@ export default function PageRailway({ activeSection }: { activeSection: string }
       </svg>
       {stations.map((stop, index) => <span key={stop.id} data-stop={stop.id} className={`journey-station${stop.id === activeSection ? ' is-active' : ''}`} style={{ top: stop.top, left: trackOffset(stop.top, bendRef.current) }}>0{index + 1}</span>)}
       <div ref={trainRef} className="journey-train">
-        <div className="journey-train__model">
-          <TrainIllustration />
-          {boarders.map(index => <span key={index} className="journey-passenger journey-passenger--boarding" data-boarding={index}><RailPassenger /></span>)}
-        </div>
+        <div className="journey-train__model"><TrainIllustration /></div>
       </div>
-      {departures.map(({ stop, person }) => <span key={`${stop}-${person}`} className="journey-passenger" data-exit={stop} data-person={person}><RailPassenger /></span>)}
+      {commuters.map((actor, index) => (
+        <span key={`${actor.stop}-${actor.car}-${actor.side}`} className="journey-passenger"
+          data-commuter={actor.stop} data-kind={actor.kind} data-car-door={actor.car} data-side={actor.side}
+          data-outfit={index % 4}>
+          <RailPassenger variant={index} />
+        </span>
+      ))}
       <span className="journey-buffer" />
     </div>
   );
